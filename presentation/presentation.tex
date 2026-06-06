@@ -1,0 +1,487 @@
+\documentclass[aspectratio=169, 12pt]{beamer}
+
+% ── Packages ─────────────────────────────────────────────────
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish]{babel}
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{graphicx}
+\graphicspath{{images/}}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{multirow}
+\usepackage{colortbl}
+
+% ── Colors palette ───────────────────────────────────────────
+\definecolor{darkblue}{HTML}{1C2B4A}
+\definecolor{mediumblue}{HTML}{2E4C7E}
+\definecolor{gold}{HTML}{C9A84C}
+\definecolor{lightgray}{HTML}{F0F2F5}
+\definecolor{neutralgray}{HTML}{6B7280}
+\definecolor{minergreen}{HTML}{2D6A4F}
+\definecolor{accentred}{HTML}{B91C1C}
+\definecolor{purewhite}{HTML}{FFFFFF}
+
+% ── Base theme ───────────────────────────────────────────────
+\usetheme{default}
+\usecolortheme{default}
+\usefonttheme{professionalfonts}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{itemize items}[circle]
+\setbeamertemplate{enumerate items}[default]
+
+% ── General formatting ───────────────────────────────────────
+\setbeamercolor{background canvas}{bg=lightgray}
+\setbeamercolor{normal text}{fg=darkblue}
+\setbeamercolor{structure}{fg=mediumblue}
+
+% ── Footline ─────────────────────────────────────────────────
+\setbeamertemplate{footline}{%
+  \begin{beamercolorbox}[wd=\paperwidth, sep=0.1cm, leftskip=0.5cm, rightskip=0.5cm]{footlinebg}
+    {\tiny\insertshortauthor}
+    \hfill
+    {\tiny \insertsubtitle · \insertshortinstitute}
+    \hfill
+    {\color{gold}\tiny\insertframenumber/\inserttotalframenumber}
+  \end{beamercolorbox}
+}
+\setbeamercolor{footlinebg}{bg=darkblue, fg=purewhite}
+
+% ── Frame title ──────────────────────────────────────────────
+\setbeamertemplate{frametitle}{%
+  \nointerlineskip
+  \begin{beamercolorbox}[wd=\paperwidth, sep=0.3cm, leftskip=0.45cm]{frametitle}
+    \usebeamerfont{frametitle}\insertframetitle
+  \end{beamercolorbox}%
+}
+\setbeamercolor{frametitle}{bg=mediumblue, fg=purewhite}
+\setbeamerfont{frametitle}{size=\normalsize, series=\bfseries}
+
+% ── Blocks ───────────────────────────────────────────────────
+\setbeamercolor{block title}{bg=mediumblue, fg=purewhite}
+\setbeamercolor{block body}{bg=purewhite, fg=darkblue}
+\setbeamerfont{block title}{size=\small, series=\bfseries}
+
+\setbeamercolor{block title alerted}{bg=accentred, fg=purewhite}
+\setbeamercolor{block body alerted}{bg=purewhite, fg=darkblue}
+
+\setbeamercolor{block title example}{bg=minergreen, fg=purewhite}
+\setbeamercolor{block body example}{bg=purewhite, fg=darkblue}
+
+% ── Items ────────────────────────────────────────────────────
+\setbeamercolor{item}{fg=gold}
+\setbeamercolor{subitem}{fg=mediumblue}
+
+% ── Command: Result Box ────────────────────
+\newcommand{\result}[1]{%
+  \begin{center}
+    \fbox{\fbox{\parbox{0.78\linewidth}{\centering\bfseries #1}}}
+  \end{center}
+}
+
+% ── Command: Section Slide ───────────────────────────────────
+\newcommand{\sectionslide}[2]{%
+  \begin{frame}[plain]
+    \begin{tikzpicture}[remember picture, overlay]
+      \fill[darkblue] (current page.south west) rectangle (current page.north east);
+      \node[anchor=center, font=\Huge\bfseries\color{purewhite}, yshift=0.5cm]
+            at (current page.center) {#1};
+      \node[anchor=north, font=\large\color{gold}, yshift=-0.5cm]
+            at (current page.center) {#2};
+    \end{tikzpicture}
+  \end{frame}
+}
+
+% ── TOC: Section Spacing Adjustment ──────────────────────────
+\makeatletter
+\patchcmd{\beamer@sectionintoc}
+  {\vskip1.5em}
+  {\vskip0.5em}
+  {}
+  {}
+\makeatother
+
+% ── Document Metadata ────────────────────────────────────────
+\title[Resolución del Examen Parcial]{\textbf{Resolución del Examen Parcial}}
+\subtitle{Modelamiento y Simulación de Sistemas}
+\author[Grupo 4]{María Julia Ahón \and Maite Cabiedes \and Luis Rey de Castro}
+\institute[UNMSM]{%
+  Facultad de Ingeniería Industrial\\
+  Universidad Nacional Mayor de San Marcos}
+\date{Lima, \today}
+
+% ════════════════════════════════════════════════════════════
+\begin{document}
+% ════════════════════════════════════════════════════════════
+
+% ── Title Page ───────────────────────────────────────────────
+{
+\setbeamertemplate{headline}{}
+\setbeamertemplate{footline}{}
+\begin{frame}[plain]
+	\begin{tikzpicture}[remember picture, overlay]
+		% Background colors
+		\fill[darkblue] (current page.south west) rectangle (current page.north east);
+		\fill[gold] ([xshift=0.36\paperwidth, yshift=-0.05cm]current page.south west)
+		rectangle ([xshift=0.375\paperwidth]current page.north east);
+		% Left side
+		\node[anchor=west] at ([xshift=0.35cm,yshift=1.5cm]current page.west)
+		{\includegraphics[height=1.6cm]{unmsm_logo.png}};
+		\node[anchor=west, font=\footnotesize\color{purewhite}, align=left,
+			xshift=0.35cm, yshift=-0.05cm] at (current page.west)
+		{Universidad Nacional\\Mayor de San Marcos};
+		\node[anchor=west, font=\scriptsize\color{gold}, align=left,
+			xshift=0.35cm, yshift=-0.8cm] at (current page.west)
+		{Facultad de Ingeniería Industrial};
+		\node[anchor=west, font=\scriptsize\color{purewhite!70}, align=left,
+			xshift=0.35cm, yshift=-1.5cm] at (current page.west)
+		{Docente: Prof. Fabián Vizcarra};
+		% Right side
+		\node[anchor=north west, font=\LARGE\bfseries\color{darkblue}, align=left,
+			xshift=0.4\paperwidth, yshift=-0.8cm] at (current page.north west)
+		{Resolución del\\Examen Parcial};
+		\node[anchor=north west, font=\normalsize\color{minergreen}, align=left,
+			xshift=0.4\paperwidth, yshift=-2.8cm] at (current page.north west)
+		{Modelamiento y Simulación de Sistemas};
+		\node[anchor=south west, font=\scriptsize\bfseries\color{darkblue}, align=left,
+			xshift=0.4\paperwidth, yshift=1.1cm] at (current page.south west)
+		{María Julia Ahón \quad · \quad Maite Cabiedes \quad · \quad Luis Rey de Castro};
+		\node[anchor=south west, font=\tiny\color{neutralgray},
+			xshift=0.4\paperwidth, yshift=0.55cm] at (current page.south west)
+		{Lima, \today};
+	\end{tikzpicture}
+\end{frame}
+}
+
+% ── Table of Contents ────────────────────────────────────────
+\begin{frame}{Contenido}
+	\tableofcontents[hideallsubsections]
+\end{frame}
+
+% ════════════════════════════════════════════════════════════
+\section{Pregunta 1: Definición del Sistema}
+% ════════════════════════════════════════════════════════════
+
+\sectionslide{Pregunta 1}{Definición del Sistema (Modelamiento Base)}
+
+\begin{frame}{P1 · Contexto Operativo}
+	\begin{block}{Sistema bajo estudio}
+		Sistema de carga y transporte de mineral en \textbf{minería subterránea}.\\
+		Flotilla de volquetes que ingresa de manera \textbf{estocástica} a la zona de
+		chancado (molienda) primario.
+	\end{block}
+	\vspace{0.4cm}
+	\begin{columns}[T]
+		\column{0.48\linewidth}
+		\begin{exampleblock}{Diagrama Lógico Estructural}
+			% Sustituir con \includegraphics o TikZ según sea necesario
+			\vspace{2.0cm}
+			\centering\textit{[Diagrama dibujado manualmente]}
+			\vspace{0.3cm}
+		\end{exampleblock}
+		\column{0.48\linewidth}
+		\begin{block}{Elementos del modelo}
+			\footnotesize
+			\begin{itemize}
+				\item \textbf{Entidad:} Volquete cargado con mineral
+				\item \textbf{Estado:} N.º de volquetes en cola/chancado
+				\item \textbf{Evento:} Llegada / fin de chancado
+				\item \textbf{Localización:} Cola de espera, chancadora
+				\item \textbf{Recurso:} Chancadora primaria
+			\end{itemize}
+		\end{block}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{P1 · Matriz Taxonómica}
+	\centering
+	\footnotesize
+	\renewcommand{\arraystretch}{1.35}
+	\begin{tabular}{>{\bfseries\color{purewhite}\columncolor{mediumblue}}l
+		>{\columncolor{purewhite}}p{3.8cm}
+		>{\columncolor{lightgray}}p{3.8cm}}
+		\toprule
+		Componente       & Elemento identificado         & Descripción                \\
+		\midrule
+		Entidad 1        & Volquete con mineral cargado  & Genera llegadas al sistema \\
+		Entidad 2        & Operario de la chancadora     & Elemento de servicio       \\
+		\midrule
+		Evento 1         & Llegada del volquete          & Inicio de la demanda       \\
+		Evento 2         & Inicio del chancado           & Captura del recurso        \\
+		Evento 3         & Fin del chancado / salida     & Liberación del recurso     \\
+		\midrule
+		Variable cont. 1 & Tiempo entre llegadas ($t_a$) & Exponencial ($\lambda$)    \\
+		Variable cont. 2 & Tiempo de servicio ($t_s$)    & Distribución a estimar     \\
+		\bottomrule
+	\end{tabular}
+\end{frame}
+
+% ════════════════════════════════════════════════════════════
+\section{Pregunta 2: Promedio Móvil y Estado Estable}
+% ════════════════════════════════════════════════════════════
+
+\sectionslide{Pregunta 2}{Promedio Móvil y Estado Estable}
+
+\begin{frame}{P2 · Marco Teórico}
+	\begin{columns}[T]
+		\column{0.46\linewidth}
+		\begin{block}{Ecuación del Promedio Móvil}
+			\[
+				\bar{r}_n = \frac{1}{n}\sum_{i=1}^{n} r_i
+				\quad (n = 1, 2, \ldots, N)
+			\]
+		\end{block}
+		\column{0.50\linewidth}
+		\begin{alertblock}{Estado Transitorio vs Estable}
+			\footnotesize
+			\begin{itemize}
+				\item \textbf{Transitorio:} alta variación en $\bar{r}_n$
+				\item \textbf{Estable:} $\bar{r}_n$ converge con variaciones
+				      pequeñas $\Rightarrow$ decisiones confiables
+			\end{itemize}
+		\end{alertblock}
+	\end{columns}
+	\vspace{0.35cm}
+	\begin{block}{Tabla de cálculo paso a paso}
+		\centering\footnotesize
+		\renewcommand{\arraystretch}{1.2}
+		\begin{tabular}{ccc}
+			\toprule
+			$n$      & $r_n$    & $\bar{r}_n$ \\
+			\midrule
+			1        &          &             \\
+			2        &          &             \\
+			$\vdots$ & $\vdots$ & $\vdots$    \\
+			N        &          &             \\
+			\bottomrule
+		\end{tabular}
+		\quad\textit{(completar con datos del examen)}
+	\end{block}
+\end{frame}
+
+\begin{frame}{P2 · Curva de Estabilización}
+	\begin{columns}[T]
+		\column{0.56\linewidth}
+		% Ejemplo de gráfico con pgfplots — reemplazar con datos reales
+		\begin{tikzpicture}
+			\begin{axis}[
+					width=7.5cm, height=5cm,
+					xlabel={Observación $n$}, ylabel={$\bar{r}_n$},
+					xmin=0, xmax=15, ymin=0, ymax=1,
+					grid=major, grid style={dotted, gray!50},
+					axis background/.style={fill=purewhite},
+					tick label style={font=\tiny},
+					label style={font=\small},
+					title style={font=\small\bfseries},
+					title={Promedio Móvil — Tiempos de Procesamiento},
+				]
+				% Reemplazar con coordenadas reales
+				\addplot[color=mediumblue, thick, mark=*,
+					mark options={fill=gold, scale=0.6}]
+				coordinates {(1,0.9)(2,0.7)(3,0.62)(4,0.55)(5,0.52)
+						(6,0.51)(7,0.50)(8,0.495)(9,0.502)(10,0.499)};
+				\addplot[color=accentred, dashed, thick]
+				coordinates {(6,0) (6,1)};
+				\node[font=\tiny, color=accentred, rotate=90, anchor=south]
+				at (axis cs:6.3,0.6) {Estado estable};
+			\end{axis}
+		\end{tikzpicture}
+		\column{0.40\linewidth}
+		\vspace{0.3cm}
+		\begin{exampleblock}{Conclusión}
+			\footnotesize
+			El sistema alcanza el estado estable a partir de la observación
+			\textbf{$n^* = \ldots$}, donde $\bar{r}_n$ permanece en
+			$[0{.}49,\,0{.}51]$.
+		\end{exampleblock}
+		\vspace{0.3cm}
+		\result{$n^* = \ldots$ \quad $\bar{r}_{n^*} \approx 0.5$}
+	\end{columns}
+\end{frame}
+
+% ════════════════════════════════════════════════════════════
+\section{Pregunta 3: Algoritmo Congruencial Lineal}
+% ════════════════════════════════════════════════════════════
+
+\sectionslide{Pregunta 3}{Generación de Variables Aleatorias (ACL)}
+
+\begin{frame}{P3 · Ecuación Recursiva}
+	\begin{block}{Algoritmo Congruencial Lineal}
+		\[
+			X_{i+1} = (a\,X_i + c)\;\operatorname{mod}(m)
+			\qquad
+			r_i = \frac{X_i}{m-1}
+		\]
+		Parámetros: semilla $X_0$, multiplicador $a$, constante $c$, módulo $m$
+		(todos enteros $> 0$).
+	\end{block}
+	\vspace{0.25cm}
+	\centering\footnotesize
+	\renewcommand{\arraystretch}{1.3}
+	\begin{tabular}{ccccc}
+		\toprule
+		$i$ & $X_i$ & $a\,X_i + c$ & $X_{i+1} = \operatorname{mod}(\cdot, m)$ & $r_i = X_i/(m-1)$ \\
+		\midrule
+		0   & $X_0$ &              &                                          & —                 \\
+		1   &       &              &                                          &                   \\
+		2   &       &              &                                          &                   \\
+		3   &       &              &                                          &                   \\
+		4   &       &              &                                          &                   \\
+		5   &       &              &                                          &                   \\
+		\bottomrule
+	\end{tabular}
+	\par\vspace{0.15cm}
+	\textit{(Completar con los parámetros dictados en pizarra)}
+\end{frame}
+
+% ════════════════════════════════════════════════════════════
+\section{Pregunta 4: Prueba de Medias}
+% ════════════════════════════════════════════════════════════
+
+\sectionslide{Pregunta 4}{Validación Estadística — Prueba de Medias}
+
+\begin{frame}{P4 · Hipótesis y Límites de Aceptación}
+	\begin{columns}[T]
+		\column{0.48\linewidth}
+		\begin{alertblock}{Hipótesis}
+			\[
+				H_0: \mu = 0.5 \quad \text{vs} \quad H_1: \mu \neq 0.5
+			\]
+			\[
+				\bar{r} = \frac{1}{n}\sum_{i=1}^{n} r_i
+			\]
+		\end{alertblock}
+		\vspace{0.3cm}
+		\begin{block}{Promedio Muestral}
+			\[
+				\bar{r} = \frac{\ldots}{\ldots} = \boxed{\ldots}
+			\]
+		\end{block}
+		\column{0.48\linewidth}
+		\begin{block}{Límites de Aceptación}
+			\[
+				LI = 0.5 - Z_{\alpha/2}\,\frac{1}{\sqrt{12n}}
+			\]
+			\[
+				LS = 0.5 + Z_{\alpha/2}\,\frac{1}{\sqrt{12n}}
+			\]
+			Con $Z_{\alpha/2} = \ldots$ (tabla normal estándar).
+		\end{block}
+		\vspace{0.2cm}
+		\begin{exampleblock}{Conclusión}
+			\footnotesize
+			Como $\bar{r} \in [LI,\,LS]$, \textbf{no se rechaza} $H_0$:\\
+			el generador es imparcial.
+		\end{exampleblock}
+	\end{columns}
+\end{frame}
+
+% ════════════════════════════════════════════════════════════
+\section{Pregunta 5: Prueba de Varianza}
+% ════════════════════════════════════════════════════════════
+
+\sectionslide{Pregunta 5}{Validación Estadística — Prueba de Varianza}
+
+\begin{frame}{P5 · Prueba Chi-Cuadrada (Varianza)}
+	\begin{columns}[T]
+		\column{0.48\linewidth}
+		\begin{alertblock}{Hipótesis}
+			\[
+				H_0: \sigma^2 = \tfrac{1}{12} \quad \text{vs} \quad
+				H_1: \sigma^2 \neq \tfrac{1}{12}
+			\]
+			\[
+				V(r) = \frac{\sum(r_i - \bar{r})^2}{n-1} = \boxed{\ldots}
+			\]
+		\end{alertblock}
+		\column{0.48\linewidth}
+		\begin{block}{Límites Chi-Cuadrada}
+			\[
+				LI = \frac{\chi^2_{(1-\alpha/2),\,n-1}}{12(n-1)}
+			\]
+			\[
+				LS = \frac{\chi^2_{\alpha/2,\,n-1}}{12(n-1)}
+			\]
+		\end{block}
+	\end{columns}
+	\vspace{0.35cm}
+	\begin{exampleblock}{Conclusión estadística}
+		\footnotesize
+		Si $V(r) \in [LI,\,LS]$, \textbf{no se rechaza} $H_0$: la dispersión del
+		generador es estadísticamente uniforme. En caso contrario se rechaza.
+	\end{exampleblock}
+	\result{$V(r) = \ldots$ \quad $LI = \ldots$ \quad $LS = \ldots$}
+\end{frame}
+
+% ════════════════════════════════════════════════════════════
+\section{Pregunta 6: Prueba de Uniformidad Chi-Cuadrada}
+% ════════════════════════════════════════════════════════════
+
+\sectionslide{Pregunta 6}{Uniformidad — Prueba Chi-Cuadrada}
+
+\begin{frame}{P6 · Estadístico de Prueba}
+	\begin{block}{Hipótesis y formulación}
+		\[
+			H_0: r_i \sim U(0,1)
+			\qquad
+			m = \lceil\sqrt{n}\rceil \text{ subintervalos}
+			\qquad
+			E_i = \frac{n}{m}
+		\]
+		\[
+			\chi^2_0 = \sum_{i=1}^{m} \frac{(E_i - O_i)^2}{E_i}
+		\]
+	\end{block}
+	\vspace{0.2cm}
+	\centering\footnotesize
+	\renewcommand{\arraystretch}{1.3}
+	\begin{tabular}{ccccc}
+		\toprule
+		Subintervalo                               & Límites       & $O_i$    & $E_i$    & $(E_i-O_i)^2/E_i$ \\
+		\midrule
+		1                                          & $[0.0,\;0.x)$ &          &          &                   \\
+		2                                          & $[0.x,\;0.y)$ &          &          &                   \\
+		$\vdots$                                   & $\vdots$      & $\vdots$ & $\vdots$ & $\vdots$          \\
+		$m$                                        & $[0.z,\;1.0)$ &          &          &                   \\
+		\midrule
+		\multicolumn{4}{r}{\bfseries $\chi^2_0 =$} &                                                         \\
+		\bottomrule
+	\end{tabular}
+	\par\vspace{0.2cm}
+	\begin{exampleblock}{}
+		\centering\footnotesize
+		Si $\chi^2_0 < \chi^2_{\alpha,\,m-1}$ (tabla) $\Rightarrow$
+		\textbf{no se rechaza} $H_0$: uniformidad confirmada.
+	\end{exampleblock}
+\end{frame}
+
+% ════════════════════════════════════════════════════════════
+\section{Python Code}
+% ════════════════════════════════════════════════════════════
+
+\sectionslide{Python Code}{Uniformidad — Prueba Chi-Cuadrada}
+
+% ── Cierre ───────────────────────────────────────────────────
+{
+	\setbeamertemplate{headline}{}
+	\setbeamertemplate{footline}{}
+	\begin{frame}[plain]
+		\begin{tikzpicture}[remember picture, overlay]
+			\fill[darkblue] (current page.south west) rectangle (current page.north east);
+			\node[font=\Large\bfseries\color{purewhite}, align=center]
+			at (current page.center) {Gracias por su atención};
+			\node[font=\normalsize\color{gold}, anchor=north, yshift=-0.4cm, align=center]
+			at (current page.center) {%
+				\textit{«El rigor metodológico es la base de la ingeniería confiable.»}\\[6pt]
+				\scriptsize Prof. Fabián Vizcarra};
+		\end{tikzpicture}
+	\end{frame}
+}
+
+\end{document}
