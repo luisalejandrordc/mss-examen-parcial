@@ -268,6 +268,26 @@
 
 \sectionslide{Pregunta 2}{Promedio Móvil y Estado Estable}
 
+\begin{frame}{Pregunta 2: Promedio Móvil y Estado Estable}
+	\begin{block}{Contexto Operativo}
+		\justifying
+		Evaluación empírica de los tiempos de procesamiento continuo en la chancadora primaria. El
+		objetivo es determinar el instante preciso en el que el sistema abandona su \textbf{estado transitorio}
+		(alta variación inicial) e ingresa al régimen operativo definitivo (\textbf{estado estable}).
+	\end{block}
+	\vspace{6pt}
+	\begin{alertblock}{Marco Teórico}
+		\begin{itemize}
+			\justifying\small
+			\item \textbf{Entidad:} Representación de los flujos de entrada y salida (el elemento responsable de que el estado cambie).
+			\item \textbf{Estado del Sistema:} Condición que guarda el sistema bajo estudio en un momento determinado (variables puntuales o acumuladas).
+			\item \textbf{Evento:} Un cambio en el estado actual del sistema (actuales o futuros).
+			\item \textbf{Localizaciones:} Lugares donde la entidad se detiene para ser transformada o esperar.
+			\item \textbf{Recursos:} Dispositivos necesarios para llevar a cabo una operación.
+		\end{itemize}
+	\end{alertblock}
+\end{frame}
+
 \begin{frame}{P2 · Marco Teórico}
 	\begin{columns}[T]
 		\column{0.46\linewidth}
@@ -514,12 +534,8 @@
 	\begin{frame}[plain]
 		\begin{tikzpicture}[remember picture, overlay]
 			\fill[darkblue] (current page.south west) rectangle (current page.north east);
-			\node[font=\Large\bfseries\color{purewhite}, align=center]
+			\node[font=\Huge\bfseries\color{purewhite}, align=center]
 			at (current page.center) {Gracias por su atención};
-			\node[font=\normalsize\color{gold}, anchor=north, yshift=-0.4cm, align=center]
-			at (current page.center) {%
-				\textit{«El rigor metodológico es la base de la ingeniería confiable.»}\\[6pt]
-				\scriptsize Prof. Fabián Vizcarra};
 		\end{tikzpicture}
 	\end{frame}
 }
