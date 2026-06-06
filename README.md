@@ -9,5 +9,5 @@
 **Integrantes - Grupo 4**
 
 - María Julia Ahón
-- Maite Cabiedes
+- Maite Caviedes
 - Luis Rey de Castro

@@ -1,3 +1,4 @@
 build/
 *.synctex.gz
 *.DS_Store
+*indent.log

@@ -1,4 +1,4 @@
-\documentclass[aspectratio=169, 12pt]{beamer}
+\documentclass[aspectratio=169, 10pt]{beamer}
 
 % ── Packages ─────────────────────────────────────────────────
 \usepackage[utf8]{inputenc}
@@ -10,7 +10,10 @@
 \usepackage{graphicx}
 \graphicspath{{images/}}
 \usepackage{xcolor}
+\usepackage{ragged2e}
+\usepackage{adjustbox}
 \usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, fit, backgrounds}
 \usepackage{pgfplots}
 \pgfplotsset{compat=1.18}
 \usepackage{lmodern}
@@ -61,7 +64,7 @@
   \end{beamercolorbox}%
 }
 \setbeamercolor{frametitle}{bg=mediumblue, fg=purewhite}
-\setbeamerfont{frametitle}{size=\normalsize, series=\bfseries}
+\setbeamerfont{frametitle}{size=\large, series=\bfseries}
 
 % ── Blocks ───────────────────────────────────────────────────
 \setbeamercolor{block title}{bg=mediumblue, fg=purewhite}
@@ -102,7 +105,7 @@
 \makeatletter
 \patchcmd{\beamer@sectionintoc}
   {\vskip1.5em}
-  {\vskip0.5em}
+  {\vskip1.0em}
   {}
   {}
 \makeatother
@@ -110,7 +113,7 @@
 % ── Document Metadata ────────────────────────────────────────
 \title[Resolución del Examen Parcial]{\textbf{Resolución del Examen Parcial}}
 \subtitle{Modelamiento y Simulación de Sistemas}
-\author[Grupo 4]{María Julia Ahón \and Maite Cabiedes \and Luis Rey de Castro}
+\author[Grupo 4]{María Julia Ahón \and Maite Caviedes \and Luis Rey de Castro}
 \institute[UNMSM]{%
   Facultad de Ingeniería Industrial\\
   Universidad Nacional Mayor de San Marcos}
@@ -133,26 +136,26 @@
 		% Left side
 		\node[anchor=west] at ([xshift=0.35cm,yshift=1.5cm]current page.west)
 		{\includegraphics[height=1.6cm]{unmsm_logo.png}};
-		\node[anchor=west, font=\footnotesize\color{purewhite}, align=left,
+		\node[anchor=west, font=\small\color{purewhite}, align=left,
 			xshift=0.35cm, yshift=-0.05cm] at (current page.west)
 		{Universidad Nacional\\Mayor de San Marcos};
-		\node[anchor=west, font=\scriptsize\color{gold}, align=left,
+		\node[anchor=west, font=\footnotesize\color{gold}, align=left,
 			xshift=0.35cm, yshift=-0.8cm] at (current page.west)
 		{Facultad de Ingeniería Industrial};
-		\node[anchor=west, font=\scriptsize\color{purewhite!70}, align=left,
+		\node[anchor=west, font=\footnotesize\color{purewhite!70}, align=left,
 			xshift=0.35cm, yshift=-1.5cm] at (current page.west)
 		{Docente: Prof. Fabián Vizcarra};
 		% Right side
-		\node[anchor=north west, font=\LARGE\bfseries\color{darkblue}, align=left,
+		\node[anchor=north west, font=\huge\bfseries\color{darkblue}, align=left,
 			xshift=0.4\paperwidth, yshift=-0.8cm] at (current page.north west)
 		{Resolución del\\Examen Parcial};
-		\node[anchor=north west, font=\normalsize\color{minergreen}, align=left,
+		\node[anchor=north west, font=\large\color{minergreen}, align=left,
 			xshift=0.4\paperwidth, yshift=-2.8cm] at (current page.north west)
 		{Modelamiento y Simulación de Sistemas};
-		\node[anchor=south west, font=\scriptsize\bfseries\color{darkblue}, align=left,
+		\node[anchor=south west, font=\footnotesize\bfseries\color{darkblue}, align=left,
 			xshift=0.4\paperwidth, yshift=1.1cm] at (current page.south west)
-		{María Julia Ahón \quad · \quad Maite Cabiedes \quad · \quad Luis Rey de Castro};
-		\node[anchor=south west, font=\tiny\color{neutralgray},
+		{María Julia Ahón \quad · \quad Maite Caviedes \quad · \quad Luis Rey de Castro};
+		\node[anchor=south west, font=\scriptsize\color{neutralgray},
 			xshift=0.4\paperwidth, yshift=0.55cm] at (current page.south west)
 		{Lima, \today};
 	\end{tikzpicture}
@@ -165,13 +168,72 @@
 \end{frame}
 
 % ════════════════════════════════════════════════════════════
-\section{Pregunta 1: Definición del Sistema}
+\section{\textbf{Pregunta 1:} Definición del Sistema}
 % ════════════════════════════════════════════════════════════
 
 \sectionslide{Pregunta 1}{Definición del Sistema (Modelamiento Base)}
 
+\begin{frame}{Pregunta 1: Definición del Sistema}
+	\begin{block}{Contexto Operativo}
+		\justifying
+		Sistema de carga y transporte de mineral en \textbf{minería subterránea}.
+		Flotilla de volquetes que ingresa de manera \textbf{estocástica} a la zona de
+		chancado (molienda) primario.
+	\end{block}
+	\vspace{6pt}
+	\begin{block}{Marco Teórico}
+		\begin{itemize}
+			\justifying\small
+			\item \textbf{Entidad:} Representación de los flujos de entrada y salida (el elemento responsable de que el estado cambie).
+			\item \textbf{Estado del Sistema:} Condición que guarda el sistema bajo estudio en un momento determinado (variables puntuales o acumuladas).
+			\item \textbf{Evento:} Un cambio en el estado actual del sistema (actuales o futuros).
+			\item \textbf{Recursos:} Dispositivos necesarios para llevar a cabo una operación.
+		\end{itemize}
+	\end{block}
+\end{frame}
+
+\begin{frame}{Pregunta 1: Definición del Sistema}
+	\begin{exampleblock}{Diagrama Lógico Estructural del Sistema}
+		\justifying
+		\small La \textbf{frontera} comprende la zona de espera y el área de procesamiento.
+		La simulación inicia con el arribo estocástico de volquetes cargados con mineral proveniente de la mina. Al cruzar
+		la frontera, los vehículos ingresan a una \textbf{fila de espera} hasta que la \textbf{chancadora primaria} esté disponible.
+		Una vez completada la descarga y transformación del material, el sistema registra dos flujos de salida: el retorno de los
+		\textbf{volquetes} vacíos hacia la mina y la transferencia del \textbf{mineral} triturado hacia la siguiente etapa de la planta.\\[6pt]
+		\begin{adjustbox}{max width=\linewidth}
+			\begin{tikzpicture}[
+					% Picture Styling
+					>=Stealth,
+					entity/.style={align=center, font=\small},
+					queue/.style={draw, rectangle, rounded corners, minimum width=3cm, minimum height=1.5cm, align=center, fill=orange!15, font=\bfseries, text=black},
+					machine/.style={draw, rectangle, rounded corners, minimum width=3cm, minimum height=1.5cm, align=center, fill=cyan!15, font=\bfseries, text=black},
+					flow/.style={->, thick, draw=black!80},
+					boundary/.style={draw, dashed, very thick, draw=red!70, inner sep=1.2cm, fill=yellow!5, rounded corners}
+				]
+				% Localizaciones Internas
+				\node[queue] (espera) {Fila de Espera \\ \mdseries \small (Volquetes en cola)};
+				\node[machine, right=2cm of espera] (chancadora) {Chancadora \\ Primaria};
+				% Frontera del Sistema
+				\begin{scope}[on background layer]
+					\node[boundary, fit=(espera) (chancadora),
+						label={[font=\bfseries, text=red!80!black]above:Frontera del Sistema (Zona de Chancado Primario)}] (frontera) {};
+				\end{scope}
+				% Nodos Externos (Origen y Destino)
+				\node[entity, left=0.5cm of frontera.west] (entrada) {\textbf{Mina} \\ \textit{Llegada estocástica} \\ \textit{de volquetes cargados}};
+				\node[entity, right=0.5cm of frontera.east, yshift=1cm] (salida_volquetes) {\textbf{Retorno} \\ \textit{Volquetes vacíos}};
+				\node[entity, right=0.5cm of frontera.east, yshift=-1cm] (salida_mineral) {\textbf{Siguiente Etapa} \\ \textit{Mineral triturado}};
+				% Flujos de Entrada, Internos y Salida
+				\draw[flow] (entrada) -- node[above, font=\footnotesize] {Ingreso} (espera);
+				\draw[flow] (espera) -- node[above, align=center, font=\footnotesize] {Pasan a\\descarga} (chancadora);
+				\draw[flow] (chancadora.east) -- node[above, xshift=-2mm, yshift=2mm, align=center, font=\footnotesize] {Salida de\\equipo} (salida_volquetes.west);
+				\draw[flow] (chancadora.east) -- node[below, xshift=-2mm, yshift=-2mm, align=center, font=\footnotesize] {Flujo de\\material} (salida_mineral.west);
+			\end{tikzpicture}
+		\end{adjustbox}
+	\end{exampleblock}
+\end{frame}
+
 \begin{frame}{P1 · Contexto Operativo}
-	\begin{block}{Sistema bajo estudio}
+	\begin{block}{Contexto Operativo}
 		Sistema de carga y transporte de mineral en \textbf{minería subterránea}.\\
 		Flotilla de volquetes que ingresa de manera \textbf{estocástica} a la zona de
 		chancado (molienda) primario.
@@ -223,7 +285,7 @@
 \end{frame}
 
 % ════════════════════════════════════════════════════════════
-\section{Pregunta 2: Promedio Móvil y Estado Estable}
+\section{\textbf{Pregunta 2:} Promedio Móvil y Estado Estable}
 % ════════════════════════════════════════════════════════════
 
 \sectionslide{Pregunta 2}{Promedio Móvil y Estado Estable}
@@ -306,7 +368,7 @@
 \end{frame}
 
 % ════════════════════════════════════════════════════════════
-\section{Pregunta 3: Algoritmo Congruencial Lineal}
+\section{\textbf{Pregunta 3:} Algoritmo Congruencial Lineal}
 % ════════════════════════════════════════════════════════════
 
 \sectionslide{Pregunta 3}{Generación de Variables Aleatorias (ACL)}
@@ -341,7 +403,7 @@
 \end{frame}
 
 % ════════════════════════════════════════════════════════════
-\section{Pregunta 4: Prueba de Medias}
+\section{\textbf{Pregunta 4:} Prueba de Medias}
 % ════════════════════════════════════════════════════════════
 
 \sectionslide{Pregunta 4}{Validación Estadística — Prueba de Medias}
@@ -383,7 +445,7 @@
 \end{frame}
 
 % ════════════════════════════════════════════════════════════
-\section{Pregunta 5: Prueba de Varianza}
+\section{\textbf{Pregunta 5:} Prueba de Varianza}
 % ════════════════════════════════════════════════════════════
 
 \sectionslide{Pregunta 5}{Validación Estadística — Prueba de Varianza}
@@ -420,7 +482,7 @@
 \end{frame}
 
 % ════════════════════════════════════════════════════════════
-\section{Pregunta 6: Prueba de Uniformidad Chi-Cuadrada}
+\section{\textbf{Pregunta 6:} Prueba de Uniformidad Chi-Cuadrada}
 % ════════════════════════════════════════════════════════════
 
 \sectionslide{Pregunta 6}{Uniformidad — Prueba Chi-Cuadrada}
