@@ -1,8 +1,13 @@
+from pathlib import Path
+
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-df = pd.read_csv("data_1.csv", header=None)
+SCRIPT_DIR = Path(__file__).resolve().parent
+csv_path = SCRIPT_DIR.parent / "data" / "data_1.csv"
+
+df = pd.read_csv(csv_path, header=None)
 df.columns = ["data"]
 df["running_avg"] = df["data"].expanding().mean()
 # data["running_avg"] = data[0].cumsum() / (data.index + 1) # alternative way
