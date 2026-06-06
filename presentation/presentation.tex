@@ -12,6 +12,8 @@
 \usepackage{xcolor}
 \usepackage{ragged2e}
 \usepackage{adjustbox}
+\usepackage{tabularx}
+\usepackage{csquotes}
 \usepackage{tikz}
 \usetikzlibrary{shapes.geometric, arrows.meta, positioning, fit, backgrounds}
 \usepackage{pgfplots}
@@ -149,7 +151,7 @@
 		\node[anchor=north west, font=\huge\bfseries\color{darkblue}, align=left,
 			xshift=0.4\paperwidth, yshift=-0.8cm] at (current page.north west)
 		{Resolución del\\Examen Parcial};
-		\node[anchor=north west, font=\large\color{minergreen}, align=left,
+		\node[anchor=north west, font=\large\bfseries\color{minergreen}, align=left,
 			xshift=0.4\paperwidth, yshift=-2.8cm] at (current page.north west)
 		{Modelamiento y Simulación de Sistemas};
 		\node[anchor=south west, font=\footnotesize\bfseries\color{darkblue}, align=left,
@@ -181,21 +183,22 @@
 		chancado (molienda) primario.
 	\end{block}
 	\vspace{6pt}
-	\begin{block}{Marco Teórico}
+	\begin{alertblock}{Marco Teórico}
 		\begin{itemize}
 			\justifying\small
 			\item \textbf{Entidad:} Representación de los flujos de entrada y salida (el elemento responsable de que el estado cambie).
 			\item \textbf{Estado del Sistema:} Condición que guarda el sistema bajo estudio en un momento determinado (variables puntuales o acumuladas).
 			\item \textbf{Evento:} Un cambio en el estado actual del sistema (actuales o futuros).
+			\item \textbf{Localizaciones:} Lugares donde la entidad se detiene para ser transformada o esperar.
 			\item \textbf{Recursos:} Dispositivos necesarios para llevar a cabo una operación.
 		\end{itemize}
-	\end{block}
+	\end{alertblock}
 \end{frame}
 
 \begin{frame}{Pregunta 1: Definición del Sistema}
 	\begin{exampleblock}{Diagrama Lógico Estructural del Sistema}
-		\justifying
-		\small La \textbf{frontera} comprende la zona de espera y el área de procesamiento.
+		\justifying\small
+		La \textbf{frontera} comprende la zona de espera y el área de procesamiento.
 		La simulación inicia con el arribo estocástico de volquetes cargados con mineral proveniente de la mina. Al cruzar
 		la frontera, los vehículos ingresan a una \textbf{fila de espera} hasta que la \textbf{chancadora primaria} esté disponible.
 		Una vez completada la descarga y transformación del material, el sistema registra dos flujos de salida: el retorno de los
@@ -232,56 +235,31 @@
 	\end{exampleblock}
 \end{frame}
 
-\begin{frame}{P1 · Contexto Operativo}
-	\begin{block}{Contexto Operativo}
-		Sistema de carga y transporte de mineral en \textbf{minería subterránea}.\\
-		Flotilla de volquetes que ingresa de manera \textbf{estocástica} a la zona de
-		chancado (molienda) primario.
-	\end{block}
-	\vspace{0.4cm}
-	\begin{columns}[T]
-		\column{0.48\linewidth}
-		\begin{exampleblock}{Diagrama Lógico Estructural}
-			% Sustituir con \includegraphics o TikZ según sea necesario
-			\vspace{2.0cm}
-			\centering\textit{[Diagrama dibujado manualmente]}
-			\vspace{0.3cm}
-		\end{exampleblock}
-		\column{0.48\linewidth}
-		\begin{block}{Elementos del modelo}
-			\footnotesize
-			\begin{itemize}
-				\item \textbf{Entidad:} Volquete cargado con mineral
-				\item \textbf{Estado:} N.º de volquetes en cola/chancado
-				\item \textbf{Evento:} Llegada / fin de chancado
-				\item \textbf{Localización:} Cola de espera, chancadora
-				\item \textbf{Recurso:} Chancadora primaria
-			\end{itemize}
-		\end{block}
-	\end{columns}
-\end{frame}
-
-\begin{frame}{P1 · Matriz Taxonómica}
-	\centering
-	\footnotesize
-	\renewcommand{\arraystretch}{1.35}
-	\begin{tabular}{>{\bfseries\color{purewhite}\columncolor{mediumblue}}l
-		>{\columncolor{purewhite}}p{3.8cm}
-		>{\columncolor{lightgray}}p{3.8cm}}
-		\toprule
-		Componente       & Elemento identificado         & Descripción                \\
-		\midrule
-		Entidad 1        & Volquete con mineral cargado  & Genera llegadas al sistema \\
-		Entidad 2        & Operario de la chancadora     & Elemento de servicio       \\
-		\midrule
-		Evento 1         & Llegada del volquete          & Inicio de la demanda       \\
-		Evento 2         & Inicio del chancado           & Captura del recurso        \\
-		Evento 3         & Fin del chancado / salida     & Liberación del recurso     \\
-		\midrule
-		Variable cont. 1 & Tiempo entre llegadas ($t_a$) & Exponencial ($\lambda$)    \\
-		Variable cont. 2 & Tiempo de servicio ($t_s$)    & Distribución a estimar     \\
-		\bottomrule
-	\end{tabular}
+\begin{frame}{Pregunta 1: Definición del Sistema}
+	\begin{exampleblock}{Matriz Taxonómica}
+		\justifying\small
+		Se clasifican los componentes fundamentales del sistema según el enfoque de \textbf{eventos discretos}.\\[6pt]
+		\centering\footnotesize
+		\renewcommand{\arraystretch}{1.35}
+		\begin{tabularx}{\linewidth}{
+			>{\bfseries\color{purewhite}\columncolor{mediumblue}}m{1.4cm}
+			>{\columncolor{purewhite}}m{2.6cm}
+			>{\columncolor{lightgray}}X}
+			\toprule
+			Categoría           & Elemento                                       & Descripción                                                                                            \\
+			\midrule
+			Entidad 1           & Volquete                                       & Vehículo que ingresa a la zona de chancado y luego se retira                                           \\
+			Entidad 2           & Mineral                                        & Material físico que es transportado y depositado en la chancadora                                      \\
+			\midrule
+			Evento 1            & Llegada de volquete                            & Cambia el estado actual: incrementa la cola de espera                                                  \\
+			Evento 2            & Inicio del chancado                            & Cambia el estado actual: chancadora pasa de estar \enquote{libre} a \enquote{ocupada}                  \\
+			Evento 3            & Fin del chancado                               & Cambia el estado actual: chancadora queda \enquote{libre}; volquete sale del sistema                   \\
+			\midrule
+			Variable continua 1 & Mineral procesado\par acumulado — $M_p(t)$     & Cantidad total (en toneladas) de mineral procesado desde que inició la simulación hasta el tiempo $t$. \\
+			Variable continua 2 & Tiempo de espera\par promedio — $\bar{W}_q(t)$ & Tiempo medio acumulado que los volquetes han pasado en la zona de espera hasta el instante $t$.        \\
+			\bottomrule
+		\end{tabularx}
+	\end{exampleblock}
 \end{frame}
 
 % ════════════════════════════════════════════════════════════
