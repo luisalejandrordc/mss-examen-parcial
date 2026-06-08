@@ -2,11 +2,13 @@
 # Warm-up Point Detection Methods for Steady-State Analysis
 # ══════════════════════════════════════════════════════════════════════════════
 
-from dataclasses import dataclass
-from typing import Any, Optional
+from typing import Optional
 
 import numpy as np
 import pandas as pd
+
+from .models import WarmupResult
+from .statistics import running_average, running_standard_deviation
 
 __all__ = [
     "method_relative_change",
@@ -17,31 +19,9 @@ __all__ = [
 ]
 
 
-@dataclass
-class WarmupResult:
-    """Stores Warm-up Point information"""
-
-    warmup: int
-    diagnostics: dict[str, Any]
-
-
 def _validate_input(data: np.ndarray):
     if len(data) < 2:
         raise ValueError("data must contain at least two observations")
-
-
-def running_average(data: np.ndarray) -> np.ndarray:
-    return np.cumsum(data) / np.arange(1, len(data) + 1)
-
-
-def running_standard_deviation(data: np.ndarray) -> np.ndarray:
-    n = np.arange(1, len(data) + 1)
-    cumsum = np.cumsum(data)
-    cumsum_sq = np.cumsum(data**2)
-    variance = (cumsum_sq - (cumsum**2) / n) / np.where(n == 1, 1, n - 1)
-    std_dev = np.sqrt(variance)
-    std_dev[0] = 0.0
-    return std_dev
 
 
 # ══════════════════════════════════════════════════════════════════════════════
