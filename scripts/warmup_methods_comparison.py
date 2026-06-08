@@ -1,7 +1,6 @@
-"""
-Warm-up Point Detection Methods for Steady-State Analysis
-Compares five methods for identifying the warm-up period in simulation output.
-"""
+# ══════════════════════════════════════════════════════════════════════════════
+# Comparison between five methods for identifying the warm-up point of a variable
+# ══════════════════════════════════════════════════════════════════════════════
 
 from pathlib import Path
 
