@@ -55,7 +55,7 @@ def method_relative_change(
             warmup = i
             break
 
-    return WarmupResult(warmup, {"rel_change": rel_change})
+    return WarmupResult(warmup, {"rel_change": rel_change, "threshold": threshold})
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -149,7 +149,11 @@ def method_ci_width(
 
     return WarmupResult(
         warmup,
-        {"ci_margin": ci_margin, "widths": widths, "rel_reduction": rel_reduction},
+        {
+            "ci_margin": ci_margin,
+            "rel_reduction": rel_reduction,
+            "threshold": threshold,
+        },
     )
 
 
