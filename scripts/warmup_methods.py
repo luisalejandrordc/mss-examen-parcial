@@ -2,10 +2,27 @@
 # Warm-up Point Detection Methods for Steady-State Analysis
 # ══════════════════════════════════════════════════════════════════════════════
 
-from typing import Optional
+from dataclasses import dataclass
+from typing import Any, Optional
 
 import numpy as np
 import pandas as pd
+
+__all__ = [
+    "method_relative_change",
+    "method_welch",
+    "method_ci_width",
+    "method_forward_cusum",
+    "method_backward_cusum",
+]
+
+
+@dataclass
+class WarmupResult:
+    """Stores Warm-up Point information"""
+
+    warmup: int
+    diagnostics: dict[str, Any]
 
 
 def _validate_input(data: np.ndarray):
@@ -17,12 +34,22 @@ def running_average(data: np.ndarray) -> np.ndarray:
     return np.cumsum(data) / np.arange(1, len(data) + 1)
 
 
+def running_standard_deviation(data: np.ndarray) -> np.ndarray:
+    n = np.arange(1, len(data) + 1)
+    cumsum = np.cumsum(data)
+    cumsum_sq = np.cumsum(data**2)
+    variance = (cumsum_sq - (cumsum**2) / n) / np.where(n == 1, 1, n - 1)
+    std_dev = np.sqrt(variance)
+    std_dev[0] = 0.0
+    return std_dev
+
+
 # ══════════════════════════════════════════════════════════════════════════════
 # METHOD 1 — Relative Change Criterion
 # ══════════════════════════════════════════════════════════════════════════════
 def method_relative_change(
     data: np.ndarray, threshold: float = 0.015, window: Optional[int] = None
-) -> tuple[int, np.ndarray]:
+) -> WarmupResult:
     """
     Warm-up ends at the first index i such that all relative changes
     in [i, i+window) are below `threshold`.
@@ -48,7 +75,7 @@ def method_relative_change(
             warmup = i
             break
 
-    return warmup, rel_change
+    return WarmupResult(warmup, {"rel_change": rel_change})
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -58,7 +85,7 @@ def method_welch(
     data: np.ndarray,
     smoothing_window: Optional[int] = None,
     stability_window: Optional[int] = None,
-) -> tuple[int, np.ndarray, float, float]:
+) -> WarmupResult:
     """
     Welch (1983): smooth the running average with a moving average of width `w`,
     then find where the smoothed curve stops oscillating.
@@ -94,7 +121,9 @@ def method_welch(
             warmup = i
             break
 
-    return warmup, smoothed, grand_mean, band
+    return WarmupResult(
+        warmup, {"smoothed": smoothed, "grand_mean": grand_mean, "band": band}
+    )
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -102,7 +131,7 @@ def method_welch(
 # ══════════════════════════════════════════════════════════════════════════════
 def method_ci_width(
     data: np.ndarray, threshold: float = 0.02, window: Optional[int] = None
-) -> tuple[int, np.ndarray, np.ndarray, np.ndarray]:
+) -> WarmupResult:
     """
     Detects warm-up as the point where the 95% CI width stops shrinking
     by more than `threshold` (relative) between consecutive observations.
@@ -123,9 +152,7 @@ def method_ci_width(
     if window is None:
         window = max(5, n // 10)  # Controls persistence requirement
 
-    running_std = np.array(
-        [data[: i + 1].std(ddof=1) if i > 0 else 0.0 for i in range(n)]
-    )
+    running_std = running_standard_deviation(data)
 
     ci_margin = 1.96 * running_std / np.sqrt(np.arange(1, n + 1))
     widths = ci_margin * 2
@@ -140,15 +167,16 @@ def method_ci_width(
             warmup = i
             break
 
-    return warmup, ci_margin, widths, rel_reduction
+    return WarmupResult(
+        warmup,
+        {"ci_margin": ci_margin, "widths": widths, "rel_reduction": rel_reduction},
+    )
 
 
 # ══════════════════════════════════════════════════════════════════════════════
 # METHOD 4 — FORWARD CUSUM (Argmax Peak Detection)
 # ══════════════════════════════════════════════════════════════════════════════
-def method_forward_cusum(
-    data: np.ndarray, k_factor: float = 0.5
-) -> tuple[int, np.ndarray, np.ndarray, float]:
+def method_forward_cusum(data: np.ndarray, k_factor: float = 0.5) -> WarmupResult:
     """
     CUSUM tracks deviations of individual observations from a target (here,
     the grand mean mu_0).  Two one-sided statistics are maintained:
@@ -184,7 +212,7 @@ def method_forward_cusum(
     mu0 = stable_half.mean()
     sigma = stable_half.std(ddof=1)
     k = k_factor * sigma
-    h = 4 * sigma  # decision limit
+    h = 4 * sigma  # heuristic decision limit
 
     C_plus = np.zeros(n)
     C_minus = np.zeros(n)
@@ -202,15 +230,13 @@ def method_forward_cusum(
         else:
             warmup = int(np.argmax(C_minus))
 
-    return warmup, C_plus, C_minus, h
+    return WarmupResult(warmup, {"C_plus": C_plus, "C_minus": C_minus, "h": h})
 
 
 # ══════════════════════════════════════════════════════════════════════════════
 # METHOD 5 — BACKWARD CUSUM (Reverse Cumulative Sum)
 # ══════════════════════════════════════════════════════════════════════════════
-def method_backward_cusum(
-    data: np.ndarray, k_factor: float = 0.5
-) -> tuple[int, np.ndarray, np.ndarray, float]:
+def method_backward_cusum(data: np.ndarray, k_factor: float = 0.5) -> WarmupResult:
     """
     By reading the timeline backwards, the simulation starts in a stable state
     and the initial warm-up transient becomes a sudden "break" at the end of the
@@ -231,7 +257,7 @@ def method_backward_cusum(
     mu0 = stable_half.mean()
     sigma = stable_half.std(ddof=1)
     k = k_factor * sigma
-    h = 4 * sigma  # decision limit
+    h = 4 * sigma  # heuristic decision limit
 
     C_plus = np.zeros(n)
     C_minus = np.zeros(n)
@@ -242,4 +268,6 @@ def method_backward_cusum(
     signals = np.where((C_plus > h) | (C_minus > h))[0]
     warmup = n - int(signals[0]) if len(signals) > 0 else 0
 
-    return warmup, C_plus[::-1], C_minus[::-1], h
+    return WarmupResult(
+        warmup, {"C_plus": C_plus[::-1], "C_minus": C_minus[::-1], "h": h}
+    )
