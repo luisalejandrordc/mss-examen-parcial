@@ -39,10 +39,11 @@ def method_relative_change(running_avg, threshold=0.015, window=None):
            spike resets the window.
     """
     if window is None:
-        window = max(5, n // 10)
+        window = max(5, n // 10)  # Controls persistence requirement
 
     rel_change = np.abs(np.diff(running_avg) / running_avg[:-1])
-    rel_change = np.concatenate([[np.nan], rel_change])  # Pad with NaN at position 0
+    # Pad with NaN at position 0 so indices align with original data
+    rel_change = np.concatenate([[np.nan], rel_change])
 
     warmup = n - 1  # default: never detected
     for i in range(1, n - window):
@@ -95,7 +96,7 @@ def method_welch(data, smoothing_window=None, stability_window=None):
 def method_ci_width(running_std, threshold=0.02, window=None):
     """
     Detects warm-up as the point where the 95% CI width stops shrinking
-    by more than `threshold` between consecutive observations.
+    by more than `threshold` (relative) between consecutive observations.
 
     CI width = 2 * 1.96 * std / sqrt(n)
 
@@ -117,7 +118,7 @@ def method_ci_width(running_std, threshold=0.02, window=None):
     rel_reduction = np.abs(np.diff(widths) / widths[:-1])
     rel_reduction = np.concatenate([[np.nan], rel_reduction])
 
-    warmup = n - 1  # default: never detected
+    warmup = n - 1
     for i in range(1, n - window):
         if np.all(rel_reduction[i : i + window] < threshold):
             warmup = i
@@ -214,7 +215,10 @@ def method_backward_cusum(data, k_factor=0.5):
         C_minus[i] = max(0, C_minus[i - 1] - (rev_data[i] - mu0) - k)
 
     signals = np.where((C_plus > h) | (C_minus > h))[0]
-    warmup = n - int(signals[0]) if len(signals) > 0 else 0
+    if len(signals) > 0:
+        warmup = n - int(signals[0])
+    else:
+        warmup = 0
 
     return warmup, C_plus[::-1], C_minus[::-1], h, mu0, sigma
 
