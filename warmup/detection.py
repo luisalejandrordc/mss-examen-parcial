@@ -7,7 +7,7 @@ from typing import Optional
 import numpy as np
 import pandas as pd
 
-from .models import WarmupResult
+from .models import CIWidth, Cusum, RelativeChange, WarmupResult, Welch
 from .statistics import running_average, running_standard_deviation
 
 __all__ = [
@@ -29,7 +29,7 @@ def _validate_input(data: np.ndarray):
 # ══════════════════════════════════════════════════════════════════════════════
 def method_relative_change(
     data: np.ndarray, threshold: float = 0.015, window: Optional[int] = None
-) -> WarmupResult:
+) -> WarmupResult[RelativeChange]:
     """
     Warm-up ends at the first index i such that all relative changes
     in [i, i+window) are below `threshold`.
@@ -55,7 +55,7 @@ def method_relative_change(
             warmup = i
             break
 
-    return WarmupResult(warmup, {"rel_change": rel_change, "threshold": threshold})
+    return WarmupResult(warmup, RelativeChange(rel_change, threshold))
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -65,7 +65,7 @@ def method_welch(
     data: np.ndarray,
     smoothing_window: Optional[int] = None,
     stability_window: Optional[int] = None,
-) -> WarmupResult:
+) -> WarmupResult[Welch]:
     """
     Welch (1983): smooth the running average with a moving average of width `w`,
     then find where the smoothed curve stops oscillating.
@@ -101,9 +101,7 @@ def method_welch(
             warmup = i
             break
 
-    return WarmupResult(
-        warmup, {"smoothed": smoothed, "grand_mean": grand_mean, "band": band}
-    )
+    return WarmupResult(warmup, Welch(smoothed, grand_mean, band))
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -111,7 +109,7 @@ def method_welch(
 # ══════════════════════════════════════════════════════════════════════════════
 def method_ci_width(
     data: np.ndarray, threshold: float = 0.02, window: Optional[int] = None
-) -> WarmupResult:
+) -> WarmupResult[CIWidth]:
     """
     Detects warm-up as the point where the 95% CI width stops shrinking
     by more than `threshold` (relative) between consecutive observations.
@@ -147,20 +145,15 @@ def method_ci_width(
             warmup = i
             break
 
-    return WarmupResult(
-        warmup,
-        {
-            "ci_margin": ci_margin,
-            "rel_reduction": rel_reduction,
-            "threshold": threshold,
-        },
-    )
+    return WarmupResult(warmup, CIWidth(ci_margin, rel_reduction, threshold))
 
 
 # ══════════════════════════════════════════════════════════════════════════════
 # METHOD 4 — FORWARD CUSUM (Argmax Peak Detection)
 # ══════════════════════════════════════════════════════════════════════════════
-def method_forward_cusum(data: np.ndarray, k_factor: float = 0.5) -> WarmupResult:
+def method_forward_cusum(
+    data: np.ndarray, k_factor: float = 0.5
+) -> WarmupResult[Cusum]:
     """
     CUSUM tracks deviations of individual observations from a target (here,
     the grand mean mu_0).  Two one-sided statistics are maintained:
@@ -198,29 +191,31 @@ def method_forward_cusum(data: np.ndarray, k_factor: float = 0.5) -> WarmupResul
     k = k_factor * sigma
     h = 4 * sigma  # heuristic decision limit
 
-    C_plus = np.zeros(n)
-    C_minus = np.zeros(n)
+    c_plus = np.zeros(n)
+    c_minus = np.zeros(n)
     for i in range(1, n):
-        C_plus[i] = max(0, C_plus[i - 1] + (data[i] - mu0) - k)
-        C_minus[i] = max(0, C_minus[i - 1] - (data[i] - mu0) - k)
+        c_plus[i] = max(0, c_plus[i - 1] + (data[i] - mu0) - k)
+        c_minus[i] = max(0, c_minus[i - 1] - (data[i] - mu0) - k)
 
-    max_plus = np.max(C_plus)
-    max_minus = np.max(C_minus)
+    max_plus = np.max(c_plus)
+    max_minus = np.max(c_minus)
 
     warmup = 0
     if max_plus > h or max_minus > h:
         if max_plus > max_minus:
-            warmup = int(np.argmax(C_plus))
+            warmup = int(np.argmax(c_plus))
         else:
-            warmup = int(np.argmax(C_minus))
+            warmup = int(np.argmax(c_minus))
 
-    return WarmupResult(warmup, {"C_plus": C_plus, "C_minus": C_minus, "h": h})
+    return WarmupResult(warmup, Cusum(c_plus, c_minus, h))
 
 
 # ══════════════════════════════════════════════════════════════════════════════
 # METHOD 5 — BACKWARD CUSUM (Reverse Cumulative Sum)
 # ══════════════════════════════════════════════════════════════════════════════
-def method_backward_cusum(data: np.ndarray, k_factor: float = 0.5) -> WarmupResult:
+def method_backward_cusum(
+    data: np.ndarray, k_factor: float = 0.5
+) -> WarmupResult[Cusum]:
     """
     By reading the timeline backwards, the simulation starts in a stable state
     and the initial warm-up transient becomes a sudden "break" at the end of the
@@ -243,15 +238,13 @@ def method_backward_cusum(data: np.ndarray, k_factor: float = 0.5) -> WarmupResu
     k = k_factor * sigma
     h = 4 * sigma  # heuristic decision limit
 
-    C_plus = np.zeros(n)
-    C_minus = np.zeros(n)
+    c_plus = np.zeros(n)
+    c_minus = np.zeros(n)
     for i in range(1, n):
-        C_plus[i] = max(0, C_plus[i - 1] + (rev_data[i] - mu0) - k)
-        C_minus[i] = max(0, C_minus[i - 1] - (rev_data[i] - mu0) - k)
+        c_plus[i] = max(0, c_plus[i - 1] + (rev_data[i] - mu0) - k)
+        c_minus[i] = max(0, c_minus[i - 1] - (rev_data[i] - mu0) - k)
 
-    signals = np.where((C_plus > h) | (C_minus > h))[0]
+    signals = np.where((c_plus > h) | (c_minus > h))[0]
     warmup = n - int(signals[0]) if len(signals) > 0 else 0
 
-    return WarmupResult(
-        warmup, {"C_plus": C_plus[::-1], "C_minus": C_minus[::-1], "h": h}
-    )
+    return WarmupResult(warmup, Cusum(c_plus[::-1], c_minus[::-1], h))

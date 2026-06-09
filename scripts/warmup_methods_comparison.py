@@ -46,7 +46,9 @@ wu5 = method_backward_cusum(data)
 print("=" * 55)
 print(f"  {'Method':<35} {'Warm-up':>8}")
 print("=" * 55)
-print(f"  {'1. Relative Change (1.5%, w=10)':<35} {wu1.warmup:>8}")
+print(
+    f"  {'1. Relative Change (' + str(wu1.diagnostics["threshold"] * 100) + '%, w=10)':<35} {wu1.warmup:>8}"
+)
 print(f"  {'2. Welch Graphical (±5% band)':<35} {wu2.warmup:>8}")
 print(f"  {'3. CI Width Stabilization':<35} {wu3.warmup:>8}")
 print(f"  {'4. Forward CUSUM (k=0.5σ, h=4σ)':<35} {wu4.warmup:>8}")
@@ -108,7 +110,11 @@ ax1b.plot(
     label="Rel. change (%)",
 )
 ax1b.axhline(
-    wu1.diagnostics["threshold"], color=COLORS["m1"], lw=0.6, linestyle="-.", alpha=0.5
+    wu1.diagnostics["threshold"] * 100,
+    color=COLORS["m1"],
+    lw=0.6,
+    linestyle="-.",
+    alpha=0.5,
 )
 ax1b.tick_params(colors="#abb2bf", labelsize=7)
 ax1b.set_ylim(0, 20)
@@ -195,7 +201,11 @@ ax3b.plot(
     label="Rel. reduction (%)",
 )
 ax3b.axhline(
-    wu3.diagnostics["threshold"], color=COLORS["m3"], lw=0.6, linestyle="-.", alpha=0.5
+    wu3.diagnostics["threshold"] * 100,
+    color=COLORS["m3"],
+    lw=0.6,
+    linestyle="-.",
+    alpha=0.5,
 )
 ax3b.tick_params(colors="#abb2bf", labelsize=7)
 ax3b.set_ylim(0, 20)

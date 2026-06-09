@@ -1,4 +1,11 @@
+# macOS
+*.DS_Store
+
+# Latex
 build/
 *.synctex.gz
-*.DS_Store
 *indent.log
+
+# Python
+__pycache__/
+venv/
