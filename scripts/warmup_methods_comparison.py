@@ -319,8 +319,9 @@ fig.suptitle(
 )
 
 # ── Saving picture ────────────────────────────────────────────────────────────
+plt.rcParams["savefig.dpi"] = 300
 # plt.savefig(
-#     "warmup_comparison.png", dpi=150, bbox_inches="tight", facecolor=fig.get_facecolor()
+#     "warmup_comparison.png", dpi=300, bbox_inches="tight", facecolor=fig.get_facecolor()
 # )
 # print("\nFigure saved as warmup_comparison.png")
 

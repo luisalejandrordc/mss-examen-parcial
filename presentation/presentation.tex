@@ -79,6 +79,19 @@
 \setbeamercolor{block title example}{bg=minergreen, fg=purewhite}
 \setbeamercolor{block body example}{bg=purewhite, fg=darkblue}
 
+% ── Block without title ──────────────────────────────────────
+\newenvironment{emptyblock}
+{
+  \begin{beamercolorbox}[
+      wd=\linewidth,
+      sep=0.2cm,
+      rounded=true
+    ]{block body}
+}
+{
+  \end{beamercolorbox}
+}
+
 % ── Items ────────────────────────────────────────────────────
 \setbeamercolor{item}{fg=gold}
 \setbeamercolor{subitem}{fg=mediumblue}
@@ -352,7 +365,7 @@
 \end{frame}
 
 \begin{frame}{Pregunta 2: Promedio Móvil y Estado Estable}
-	\begin{alertblock}{Metodo 1: Criterio de Cambio Relativo}
+	\begin{alertblock}{Método 1: Criterio de Cambio Relativo}
 		\justifying
 		El estado estable inicia cuando el promedio móvil deja de cambiar de forma
 		significativa entre observaciones consecutivas.\\[4pt]
@@ -385,6 +398,61 @@
 				\end{itemize}
 			\end{column}
 		\end{columns}
+	\end{alertblock}
+\end{frame}
+
+\begin{frame}{Pregunta 2: Promedio Móvil y Estado Estable}
+	\begin{emptyblock}
+		\justifying
+		\textbf{Resultado:} El estado estable comienza a partir de la observación N°15.\\[8pt]
+		\centering
+		\includegraphics[width=0.95\linewidth]{method-1.png}
+	\end{emptyblock}
+\end{frame}
+
+\begin{frame}{Pregunta 2: Promedio Móvil y Estado Estable}
+	\begin{alertblock}{Método 2: Método Gráfico de Welch (1983)}
+		\justifying
+		El estado estable inicia cuando el promedio móvil deja de cambiar de forma
+		significativa entre observaciones consecutivas.\\[4pt]
+		\textbf{Estadístico:}
+		\[
+			\delta_n \;=\; \left|\frac{\bar{r}_n - \bar{r}_{n-1}}{\bar{r}_{n-1}}\right|
+		\]
+
+		\textbf{Criterio de parada} (ventana $w = \lfloor N/10 \rfloor$):
+		\[
+			\hat{n}_{\text{wu}} = \min\bigl\{\,n : \delta_n, \delta_{n+1}, \ldots,
+			\delta_{n+w-1} < \tau\,\bigr\}
+			\qquad \tau = 2\%
+		\]
+		La exigencia de \textit{w observaciones consecutivas} bajo el umbral
+		evita falsos positivos causados por valores atípicos aislados.\\[4pt]
+		\begin{columns}[T]
+			\begin{column}{0.45\textwidth}
+				\textbf{Ventajas}
+				\begin{itemize}\small
+					\item Intuitivo y fácil de calibrar
+					\item Bajo costo computacional
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.45\textwidth}
+				\textbf{Limitaciones}
+				\begin{itemize}\small
+					\item Sensible a la elección de $\tau$
+					\item Puede activarse tarde con series ruidosas
+				\end{itemize}
+			\end{column}
+		\end{columns}
+	\end{alertblock}
+\end{frame}
+
+\begin{frame}{Pregunta 2: Promedio Móvil y Estado Estable}
+	\begin{alertblock}{Método 1: Criterio de Cambio Relativo}
+		\justifying
+		\textbf{Resultado:} El estado estable comienza a partir de la observación N°15.\\[8pt]
+		\centering
+		\includegraphics[width=0.95\linewidth]{method-1.png}
 	\end{alertblock}
 \end{frame}
 
