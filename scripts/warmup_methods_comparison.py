@@ -18,6 +18,7 @@ from warmup.detection import (
     method_relative_change,
     method_welch,
 )
+from warmup.statistics import running_average
 
 # Variables for mining_simulation.csv: "interarrival_time", "crushing_time", "mineral_load"
 # Variables for processing_time_x.csv: "processing_time"
@@ -29,12 +30,7 @@ csv_path = SCRIPT_DIR.parent / "data" / "processing_time_1.csv"
 
 df = pd.read_csv(csv_path)
 data = df[VARIABLE].to_numpy(dtype=float)
-n = len(df)
-
-# ── Running statistics ─────────────────────────────────────────────────────────
-running_avg = np.array([data[: i + 1].mean() for i in range(n)])
-running_std = np.array([data[: i + 1].std(ddof=1) if i > 0 else 0.0 for i in range(n)])
-ci_margin = 1.96 * running_std / np.sqrt(np.arange(1, n + 1))
+running_avg = running_average(data)
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -47,16 +43,16 @@ wu4 = method_forward_cusum(data)
 wu5 = method_backward_cusum(data)
 
 print("=" * 55)
-print(f"  {'Method':<35} {'Warm-up':>8}")
+print(f"  {'Method':<40} {'Warm-up':>8}")
 print("=" * 55)
-print(f"  {'1. Relative Change (2%, w=10)':<35} {wu1.warmup:>8}")
-print(f"  {'2. Welch Graphical (±5% band)':<35} {wu2.warmup:>8}")
-print(f"  {'3. CI Width Stabilization':<35} {wu3.warmup:>8}")
-print(f"  {'4. Forward CUSUM (k=0.5σ, h=4σ)':<35} {wu4.warmup:>8}")
-print(f"  {'5. Backward CUSUM (k=0.5σ, h=4σ)':<35} {wu5.warmup:>8}")
+print(f"  {'1. Relative Change (2%, w=10)':<40} {wu1.warmup:>8}")
+print(f"  {'2. Welch Graphical (±5% band)':<40} {wu2.warmup:>8}")
+print(f"  {'3. CI Width Stabilization (5%, w=10)':<40} {wu3.warmup:>8}")
+print(f"  {'4. Forward CUSUM (k=0.5σ, h=4σ)':<40} {wu4.warmup:>8}")
+print(f"  {'5. Backward CUSUM (k=0.5σ, h=4σ)':<40} {wu5.warmup:>8}")
 print("=" * 55)
 
-idx = np.arange(n)
+idx = np.arange(len(data))
 
 # ══════════════════════════════════════════════════════════════════════════════
 # Plot — 5-panel figure, one per method
@@ -116,7 +112,7 @@ ax1b.axhline(
     label="Threshold",
 )
 ax1b.tick_params(colors="#abb2bf", labelsize=7)
-ax1b.set_ylim(0, 20)
+ax1b.set_ylim(0, min(20, np.nanmax(wu1.info.rel_change) * 100))
 ax1b.set_ylabel("Rel. change (%)", color=COLORS["m1"], fontsize=7)
 ax1.set_ylabel("Running avg", color="#abb2bf", fontsize=8)
 lines1, labels1 = ax1.get_legend_handles_labels()
@@ -206,7 +202,7 @@ ax3b.axhline(
     label="Threshold",
 )
 ax3b.tick_params(colors="#abb2bf", labelsize=7)
-ax3b.set_ylim(0, 20)
+ax3b.set_ylim(0, min(20, np.nanmax(wu3.info.rel_reduction) * 100))
 ax3b.set_ylabel("Rel. reduction (%)", color=COLORS["m3"], fontsize=7)
 ax3.set_ylabel("Running avg", color="#abb2bf", fontsize=8)
 lines3, labels3 = ax3.get_legend_handles_labels()
