@@ -602,7 +602,6 @@
 				\end{enumerate}
 			\end{column}
 			\begin{column}{0.45\textwidth}
-				% \vspace{14pt}
 				Este enfoque evita el efecto drain-out del CUSUM Directo porque la
 				``ruptura'' en el array invertido ocurre al entrar a la zona transitoria,
 				no al salir de ella.
@@ -631,9 +630,42 @@
 \begin{frame}{Pregunta 2: Promedio Móvil y Estado Estable}
 	\begin{emptyblock}
 		\justifying
-		\textbf{Resultado:} El estado estable comienza a partir de la observación N°15.\\[8pt]
+		\textbf{Resultado:} El estado estable comienza a partir de la observación N°20.\\[8pt]
 		\centering
-		\includegraphics[width=0.95\linewidth]{method-1.png}
+		\includegraphics[width=0.95\linewidth]{method-5.png}
+	\end{emptyblock}
+\end{frame}
+
+\begin{frame}{Pregunta 2: Promedio Móvil y Estado Estable}
+	\begin{alertblock}{Comparativa de Métodos}
+		\justifying
+		\begin{center}
+			\small
+			\begin{tabular}{clccc}
+				\toprule
+				\textbf{\#} & \textbf{Método} & \textbf{Warm-up}
+				            & \textbf{Base}   & \textbf{Complejidad}                       \\
+				\midrule
+				1           & Cambio Relativo & 15                   & Heurística  & Baja  \\
+				2           & Welch (1983)    & 14                   & Gráfica     & Baja  \\
+				3           & Ancho IC 95\%   & 18                   & Estadística & Media \\
+				4           & CUSUM Directo   & 19                   & Control     & Media \\
+				5           & CUSUM Inverso   & 20                   & Control     & Media \\
+				\bottomrule
+			\end{tabular}
+		\end{center}
+		\textbf{Conclusión:}\\[6pt]
+		...
+	\end{alertblock}
+\end{frame}
+
+\begin{frame}{Pregunta 2: Promedio Móvil y Estado Estable}
+	\begin{emptyblock}
+		\justifying
+		A continuación, se muestra la Curva de Estabilización, con los warm-up points
+		determinados por cada uno de los 5 métodos desarrollados.\\[8pt]
+		\centering
+		\includegraphics[width=0.95\linewidth]{summary.png}
 	\end{emptyblock}
 \end{frame}
 
