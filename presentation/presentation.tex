@@ -438,7 +438,7 @@
 			\end{column}
 		\end{columns}
 		\vspace{4pt}
-		Donde $\mu$ representa una estimación de la media en régimen estacionario.\\[4pt]
+		\textit{\small En los extremos, el suavizado se calculó con los datos disponibles (\texttt{min\_periods=1}).}\\[4pt]
 		\begin{columns}[T]
 			\begin{column}{0.45\textwidth}
 				\textbf{Ventajas}
@@ -464,6 +464,176 @@
 		\textbf{Resultado:} El estado estable comienza a partir de la observación N°14.\\[8pt]
 		\centering
 		\includegraphics[width=0.95\linewidth]{method-2.png}
+	\end{emptyblock}
+\end{frame}
+
+\begin{frame}{Pregunta 2: Promedio Móvil y Estado Estable}
+	\begin{alertblock}{Método 3: Estabilización del Ancho del IC}
+		\justifying
+		\textbf{Idea central:} En lugar de observar el nivel del promedio, se observa la
+		\textit{precisión} de su estimación; el estado estable comienza cuando
+		el intervalo de confianza deja de contraerse de forma significativa.\\[4pt]
+		\begin{columns}[T]
+			\begin{column}{0.45\textwidth}
+				\textbf{Ancho del IC 95\%:}
+				\[
+					W_n \;=\; 2 \times 1.96 \;\frac{s_n}{\sqrt{n}}
+				\]
+			\end{column}
+			\begin{column}{0.45\textwidth}
+				\textbf{Reducción relativa:}
+				\[
+					\Delta W_n \;=\; \frac{|W_{n-1} - W_n|}{W_{n-1}}
+				\]
+			\end{column}
+		\end{columns}
+		\vspace{8pt}
+		\textbf{Criterio de parada} (ventana $w = \lfloor N/10 \rfloor$):
+		\[
+			\hat{n}_{\text{wu}} = \min\bigl\{\,n :
+			\Delta W_k < \tau \,,\, \forall \, k \in \{n, \ldots, n+w-1\} \,\bigr\}
+			\qquad \tau = 2\%
+		\]
+		\vspace{-12pt}
+		\begin{columns}[T]
+			\begin{column}{0.45\textwidth}
+				\textbf{Ventajas}
+				\begin{itemize}\small
+					\item Fundamentado estadísticamente
+					\item Vinculado directamente a la precisión
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.45\textwidth}
+				\textbf{Limitaciones}
+				\begin{itemize}\small
+					\item $W_n$ siempre decrece — umbral crítico
+					\item Tiende a estimar warm-up más tarde
+				\end{itemize}
+			\end{column}
+		\end{columns}
+	\end{alertblock}
+\end{frame}
+
+\begin{frame}{Pregunta 2: Promedio Móvil y Estado Estable}
+	\begin{emptyblock}
+		\justifying
+		\textbf{Resultado:} El estado estable comienza a partir de la observación N°18.\\[8pt]
+		\centering
+		\includegraphics[width=0.95\linewidth]{method-3.png}
+	\end{emptyblock}
+\end{frame}
+
+\begin{frame}{Pregunta 2: Promedio Móvil y Estado Estable}
+	\begin{alertblock}{Método 4: CUSUM Directo (\textit{Forward CUSUM})}
+		\justifying
+		\textbf{Idea central:} El CUSUM acumula desviaciones respecto a la media del estado estable
+		$\mu_0$. El punto de transición es el \textbf{máximo (argmax)} de la
+		estadística acumulada — el instante en que los errores transitorios dejan
+		de crecer.\\[4pt]
+		\begin{columns}[T]
+			\begin{column}{0.45\textwidth}
+				\textbf{Estadísticos:} ($k = 0.5\sigma$, \; $h = 4\sigma$)
+				\[
+					C^+_i = \max\!\bigl(0,\; C^+_{i-1} + (x_i - \mu_0) - k\bigr)
+				\]
+				\[
+					C^-_i = \max\!\bigl(0,\; C^-_{i-1} - (x_i - \mu_0) - k\bigr)
+				\]
+			\end{column}
+			\begin{column}{0.45\textwidth}
+				\textbf{Warm-up point:}\\[-2pt]
+				\[
+					\hat{n}_{\text{wu}} = \arg\max_i \;\max(C^+_i,\; C^-_i)
+				\]
+				\[
+					\quad \text{si } \max(C^+,C^-) > h
+				\]
+			\end{column}
+		\end{columns}
+		\vspace{10pt}
+		% \small
+		Usar el último índice con señal (en lugar del argmax) sobreestima
+		el warm-up por el efecto ``drain-out'' — el CUSUM tarda en volver a cero tras la
+		fase transitoria.\\[4pt]
+		\begin{columns}[T]
+			\begin{column}{0.45\textwidth}
+				\textbf{Ventajas}
+				\begin{itemize}\small
+					\item Sensible a cambios de nivel sostenidos
+					\item Teoría estadística bien establecida
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.45\textwidth}
+				\textbf{Limitaciones}
+				\begin{itemize}\small
+					\item Requiere estimar $\mu_0$ y $\sigma$ a priori
+					\item Problema del ``huevo y la gallina''
+				\end{itemize}
+			\end{column}
+		\end{columns}
+	\end{alertblock}
+\end{frame}
+
+\begin{frame}{Pregunta 2: Promedio Móvil y Estado Estable}
+	\begin{emptyblock}
+		\justifying
+		\textbf{Resultado:} El estado estable comienza a partir de la observación N°19.\\[8pt]
+		\centering
+		\includegraphics[width=0.95\linewidth]{method-4.png}
+	\end{emptyblock}
+\end{frame}
+
+\begin{frame}{Pregunta 2: Promedio Móvil y Estado Estable}
+	\begin{alertblock}{Método 5: CUSUM Inverso (\textit{Backward CUSUM})}
+		\justifying
+		\textbf{Idea central:} Al invertir la serie temporal, la simulación ``empieza'' en
+		estado estable y el transitorio aparece como una ruptura abrupta al final
+		del array invertido. El CUSUM detecta esa ruptura fácilmente y se mapea
+		de vuelta al eje temporal original.\\[8pt]
+		\begin{columns}[c]
+			\begin{column}{0.45\textwidth}
+				\textbf{Procedimiento:}
+				\begin{enumerate}\small
+					\item Invertir: $x'_i = x_{N-i+1}$
+					\item Calcular $\mu_0,\,\sigma$ en la \textit{primera} mitad de $x'$
+					\item Calcular $C^+_i,\,C^-_i$ sobre $x'$
+					\item Primer índice $i^*$ con señal $> h$ en $x'$
+					\item Mapear: $\hat{n}_{\text{wu}} = N - i^*$
+				\end{enumerate}
+			\end{column}
+			\begin{column}{0.45\textwidth}
+				% \vspace{14pt}
+				Este enfoque evita el efecto drain-out del CUSUM Directo porque la
+				``ruptura'' en el array invertido ocurre al entrar a la zona transitoria,
+				no al salir de ella.
+			\end{column}
+		\end{columns}
+		\vspace{14pt}
+		\begin{columns}[T]
+			\begin{column}{0.45\textwidth}
+				\textbf{Ventajas}
+				\begin{itemize}\small
+					\item Elimina el sesgo de drain-out
+					\item Señal CUSUM más nítida
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.45\textwidth}
+				\textbf{Limitaciones}
+				\begin{itemize}\small
+					\item Menos intuitivo conceptualmente
+					\item Requiere suficiente zona estable al final
+				\end{itemize}
+			\end{column}
+		\end{columns}
+	\end{alertblock}
+\end{frame}
+
+\begin{frame}{Pregunta 2: Promedio Móvil y Estado Estable}
+	\begin{emptyblock}
+		\justifying
+		\textbf{Resultado:} El estado estable comienza a partir de la observación N°15.\\[8pt]
+		\centering
+		\includegraphics[width=0.95\linewidth]{method-1.png}
 	\end{emptyblock}
 \end{frame}
 
