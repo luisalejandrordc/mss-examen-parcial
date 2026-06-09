@@ -108,7 +108,7 @@ def method_welch(
 # METHOD 3 — Confidence Interval Width Stabilization
 # ══════════════════════════════════════════════════════════════════════════════
 def method_ci_width(
-    data: np.ndarray, threshold: float = 0.02, window: Optional[int] = None
+    data: np.ndarray, threshold: float = 0.05, window: Optional[int] = None
 ) -> WarmupResult[CIWidth]:
     """
     Detects warm-up as the point where the 95% CI width stops shrinking

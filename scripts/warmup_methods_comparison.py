@@ -1,5 +1,7 @@
 # ══════════════════════════════════════════════════════════════════════════════
 # Comparison between five methods for identifying the warm-up point of a variable
+# To run the file from the root directory, run it as a module using:
+# python3 -m scripts.warmup_methods_comparison
 # ══════════════════════════════════════════════════════════════════════════════
 
 from pathlib import Path
@@ -17,12 +19,13 @@ from warmup.detection import (
     method_welch,
 )
 
-# Available Variables: "interarrival_time", "crushing_time", "mineral_load"
-VARIABLE = "interarrival_time"
+# Variables for mining_simulation.csv: "interarrival_time", "crushing_time", "mineral_load"
+# Variables for processing_time_x.csv: "processing_time"
+VARIABLE = "processing_time"
 
 # ── Load data ──────────────────────────────────────────────────────────────────
 SCRIPT_DIR = Path(__file__).resolve().parent
-csv_path = SCRIPT_DIR.parent / "data" / "mining_simulation.csv"
+csv_path = SCRIPT_DIR.parent / "data" / "processing_time_1.csv"
 
 df = pd.read_csv(csv_path)
 data = df[VARIABLE].to_numpy(dtype=float)
@@ -65,19 +68,16 @@ COLORS = {
     "m4": "#e5c07b",  # yellow
     "m5": "#c678dd",  # purple
     "avg": "#abb2bf",
-    "raw": "#4b5263",
-    "warmup": "#ff6b6b",
+    "panel": "#282c34",
 }
 
 fig = plt.figure(figsize=(16, 8))
 fig.patch.set_facecolor("#1e2127")
 gs = gridspec.GridSpec(3, 2, figure=fig, hspace=0.45, wspace=0.3)
 
-PANEL_BG = "#282c34"
-
 
 def style_ax(ax, title, color):
-    ax.set_facecolor(PANEL_BG)
+    ax.set_facecolor(COLORS["panel"])
     ax.tick_params(colors="#abb2bf", labelsize=8)
     for spine in ax.spines.values():
         spine.set_edgecolor("#3e4451")
@@ -126,7 +126,7 @@ ax1.legend(
     labels1 + labels1b,
     loc="upper right",
     fontsize=7,
-    facecolor=PANEL_BG,
+    facecolor=COLORS["panel"],
     labelcolor="#abb2bf",
     edgecolor="#3e4451",
 )
@@ -163,7 +163,7 @@ ax2.set_ylabel("Value", color="#abb2bf", fontsize=8)
 ax2.legend(
     loc="upper right",
     fontsize=7,
-    facecolor=PANEL_BG,
+    facecolor=COLORS["panel"],
     labelcolor="#abb2bf",
     edgecolor="#3e4451",
 )
@@ -216,7 +216,7 @@ ax3.legend(
     labels3 + labels3b,
     loc="upper right",
     fontsize=7,
-    facecolor=PANEL_BG,
+    facecolor=COLORS["panel"],
     labelcolor="#abb2bf",
     edgecolor="#3e4451",
 )
@@ -245,7 +245,7 @@ ax4.set_ylabel("CUSUM statistic", color="#abb2bf", fontsize=8)
 ax4.legend(
     loc="upper right",
     fontsize=7,
-    facecolor=PANEL_BG,
+    facecolor=COLORS["panel"],
     labelcolor="#abb2bf",
     edgecolor="#3e4451",
 )
@@ -274,7 +274,7 @@ ax5.set_ylabel("CUSUM statistic", color="#abb2bf", fontsize=8)
 ax5.legend(
     loc="upper right",
     fontsize=7,
-    facecolor=PANEL_BG,
+    facecolor=COLORS["panel"],
     labelcolor="#abb2bf",
     edgecolor="#3e4451",
 )
@@ -308,7 +308,7 @@ ax6.set_ylabel("Running avg", color="#abb2bf", fontsize=8)
 ax6.legend(
     loc="upper right",
     fontsize=6.5,
-    facecolor=PANEL_BG,
+    facecolor=COLORS["panel"],
     labelcolor="#abb2bf",
     edgecolor="#3e4451",
 )
