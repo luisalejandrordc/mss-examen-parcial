@@ -801,6 +801,42 @@
 
 \end{frame}
 
+\begin{frame}{Pregunta 3: Generación de Variables Aleatorias (ACL)}
+
+	\textbf{Iteración 4} \;($X_3 = 104$):
+	\[
+		X_4 = (37 \times 104 + 19)\;\mathrm{mod}(128)
+		= 3867\;\mathrm{mod}(128) = \mathbf{27}
+		\quad\Rightarrow\quad r_4 = \tfrac{27}{127} = \mathbf{0.2126}
+	\]
+
+	\vspace{0.2em}
+	\textbf{Iteración 5} \;($X_4 = 27$):
+	\[
+		X_5 = (37 \times 27 + 19)\;\mathrm{mod}(128)
+		= 1018\;\mathrm{mod}(128) = \mathbf{122}
+		\quad\Rightarrow\quad r_5 = \tfrac{122}{127} = \mathbf{0.9606}
+	\]
+
+	\vspace{0.4em}
+	\begin{center}
+		\small
+		\renewcommand{\arraystretch}{1.25}
+		\begin{tabular}{cccccc}
+			\toprule
+			$i$ & $X_{i-1}$ & $a \cdot X_{i-1}$ & $+\,c$ & $X_i \bmod 128$ & $r_i = X_i/127$ \\
+			\midrule
+			1   & 55        & 2035              & 2054   & 6               & 0.0472          \\
+			2   & 6         & 222               & 241    & 113             & 0.8898          \\
+			3   & 113       & 4181              & 4200   & 104             & 0.8189          \\
+			4   & 104       & 3848              & 3867   & 27              & 0.2126          \\
+			5   & 27        & 999               & 1018   & 122             & 0.9606          \\
+			\bottomrule
+		\end{tabular}
+	\end{center}
+
+\end{frame}
+
 % ════════════════════════════════════════════════════════════
 \section{\textbf{Pregunta 4:} Prueba de Medias}
 % ════════════════════════════════════════════════════════════
