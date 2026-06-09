@@ -42,8 +42,8 @@ ax.tick_params(colors="#abb2bf", labelsize=10)
 for spine in ax.spines.values():
     spine.set_edgecolor("#3e4451")
 ax.grid(True, alpha=0.15, color="#abb2bf")
-ax.set_xlabel("Observation", color="#abb2bf", fontsize=10)
-ax.set_ylabel("Running average", color="#abb2bf", fontsize=10)
+ax.set_xlabel("Observation", color="#abb2bf", fontsize=10, fontweight="bold")
+ax.set_ylabel("Running average", color="#abb2bf", fontsize=10, fontweight="bold")
 ax.legend(
     loc="upper right",
     fontsize=10,
