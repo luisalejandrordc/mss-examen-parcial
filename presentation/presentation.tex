@@ -654,15 +654,21 @@
 				\bottomrule
 			\end{tabular}
 		\end{center}
-		\textbf{Conclusión:}\\[6pt]
-		...
+		\textbf{Conclusión:}\\[4pt]
+		Los cinco métodos analizados sitúan el inicio del estado estable entre las
+		observaciones \textbf{14 y 20}. Mientras que los enfoques heurísticos y gráficos
+		detectan una estabilización temprana, los métodos de control estadístico
+		riguroso, como el ancho del intervalo de confianza y CUSUM, exigen mayor
+		evidencia. Para garantizar la eliminación total del sesgo transitorio, se
+		recomienda adoptar un criterio conservador y establecer el \textit{warm-up point}
+		en la \textbf{observación 20}.
 	\end{alertblock}
 \end{frame}
 
 \begin{frame}{Pregunta 2: Promedio Móvil y Estado Estable}
 	\begin{emptyblock}
 		\justifying
-		A continuación, se muestra la Curva de Estabilización, con los warm-up points
+		A continuación, se muestra la Curva de Estabilización, con los \textit{warm-up points}
 		determinados por cada uno de los 5 métodos desarrollados.\\[8pt]
 		\centering
 		\includegraphics[width=0.95\linewidth]{summary.png}
