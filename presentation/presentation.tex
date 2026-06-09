@@ -735,6 +735,72 @@
 	\end{exampleblock}
 \end{frame}
 
+\begin{frame}{Pregunta 3: Generación de Variables Aleatorias (ACL)}
+
+	\begin{exampleblock}{Selección de Parámetros}
+		\[
+			X_0 = 55 \qquad a = 37 \qquad c = 19 \qquad m = 2^7 = 128
+		\]
+		\begin{center}
+			\renewcommand{\arraystretch}{1.3}
+			\begin{tabular}{clll}
+				\toprule
+				\textbf{Condición} & \textbf{Requisito}                       & \textbf{Cálculo} & \\
+				\midrule
+				$m = 2^g$
+				                   & $g$ entero
+				                   & $m = 2^7 = 128$
+				                   & \checkmark                                                    \\
+				$a = 1+4k$
+				                   & $k$ entero
+				                   & $a = 1 + 4(9) = 37$, \; $37 \bmod 4 = 1$
+				                   & \checkmark                                                    \\
+				$\gcd(c,m)=1$
+				                   & $c$ impar
+				                   & $\gcd(19,\,128) = 1$ \;(19 primo)
+				                   & \checkmark                                                    \\
+				$0 < X_0 < m$
+				                   & entero positivo
+				                   & $0 < 55 < 128$
+				                   & \checkmark                                                    \\
+				\bottomrule
+			\end{tabular}
+		\end{center}
+		\textbf{Periodo de vida garantizado:} $N \;=\; m \;=\; 2^7 \;=\; \mathbf{128}$
+	\end{exampleblock}
+\end{frame}
+
+\begin{frame}{Pregunta 3: Generación de Variables Aleatorias (ACL)}
+
+	Aplicando $X_{i+1} = (37 \cdot X_i + 19)\;\mathrm{mod}(128)$
+	y $\;r_i = X_i/127$:
+
+	\vspace{0.5em}
+	\textbf{Iteración 1} \;($X_0 = 55$):
+	\[
+		X_1 = (37 \times 55 + 19)\;\mathrm{mod}(128)
+		= 2054\;\mathrm{mod}(128) = \mathbf{6}
+		\quad\Rightarrow\quad r_1 = \tfrac{6}{127} = \mathbf{0.0472}
+	\]
+
+	\vspace{0.2em}
+	\textbf{Iteración 2} \;($X_1 = 6$):
+	\[
+		X_2 = (37 \times 6 + 19)\;\mathrm{mod}(128)
+		= 241\;\mathrm{mod}(128) = \mathbf{113}
+		\quad\Rightarrow\quad r_2 = \tfrac{113}{127} = \mathbf{0.8898}
+	\]
+
+	\vspace{0.2em}
+	\textbf{Iteración 3} \;($X_2 = 113$):
+	\[
+		X_3 = (37 \times 113 + 19)\;\mathrm{mod}(128)
+		= 4200\;\mathrm{mod}(128) = \mathbf{104}
+		\quad\Rightarrow\quad r_3 = \tfrac{104}{127} = \mathbf{0.8189}
+	\]
+
+\end{frame}
+
 % ════════════════════════════════════════════════════════════
 \section{\textbf{Pregunta 4:} Prueba de Medias}
 % ════════════════════════════════════════════════════════════
