@@ -739,70 +739,69 @@
 \end{frame}
 
 \begin{frame}{Pregunta 3: Generación de Variables Aleatorias (ACL)}
+	\begin{exampleblock}{Desarrollo Iterativo}
+		Se presenta el proceso de generación de los \textbf{primeros cinco} números
+		pseudoaleatorios utilizando el método ACL con los parámetros seleccionados.\\[6pt]
+		Aplicando $X_{i+1} = (37 \cdot X_i + 19)\;\mathrm{mod}(128)$
+		y $\;r_i = X_i/127$:\\[8pt]
+		\textbf{Iteración 1} \;($X_0 = 55$):
+		\[
+			X_1 = (37 \times 55 + 19)\;\mathrm{mod}(128)
+			= 2054\;\mathrm{mod}(128) = \mathbf{6}
+			\quad\Rightarrow\quad r_1 = \tfrac{6}{127} = \mathbf{0.0472}
+		\]
 
-	Aplicando $X_{i+1} = (37 \cdot X_i + 19)\;\mathrm{mod}(128)$
-	y $\;r_i = X_i/127$:
+		\vspace{0.2em}
+		\textbf{Iteración 2} \;($X_1 = 6$):
+		\[
+			X_2 = (37 \times 6 + 19)\;\mathrm{mod}(128)
+			= 241\;\mathrm{mod}(128) = \mathbf{113}
+			\quad\Rightarrow\quad r_2 = \tfrac{113}{127} = \mathbf{0.8898}
+		\]
 
-	\vspace{0.5em}
-	\textbf{Iteración 1} \;($X_0 = 55$):
-	\[
-		X_1 = (37 \times 55 + 19)\;\mathrm{mod}(128)
-		= 2054\;\mathrm{mod}(128) = \mathbf{6}
-		\quad\Rightarrow\quad r_1 = \tfrac{6}{127} = \mathbf{0.0472}
-	\]
-
-	\vspace{0.2em}
-	\textbf{Iteración 2} \;($X_1 = 6$):
-	\[
-		X_2 = (37 \times 6 + 19)\;\mathrm{mod}(128)
-		= 241\;\mathrm{mod}(128) = \mathbf{113}
-		\quad\Rightarrow\quad r_2 = \tfrac{113}{127} = \mathbf{0.8898}
-	\]
-
-	\vspace{0.2em}
-	\textbf{Iteración 3} \;($X_2 = 113$):
-	\[
-		X_3 = (37 \times 113 + 19)\;\mathrm{mod}(128)
-		= 4200\;\mathrm{mod}(128) = \mathbf{104}
-		\quad\Rightarrow\quad r_3 = \tfrac{104}{127} = \mathbf{0.8189}
-	\]
+		\vspace{0.2em}
+		\textbf{Iteración 3} \;($X_2 = 113$):
+		\[
+			X_3 = (37 \times 113 + 19)\;\mathrm{mod}(128)
+			= 4200\;\mathrm{mod}(128) = \mathbf{104}
+			\quad\Rightarrow\quad r_3 = \tfrac{104}{127} = \mathbf{0.8189}
+		\]
+		\vspace{-16pt}
+	\end{exampleblock}
 
 \end{frame}
 
 \begin{frame}{Pregunta 3: Generación de Variables Aleatorias (ACL)}
+	\begin{emptyblock}
+		\textbf{Iteración 4} \;($X_3 = 104$):
+		\[
+			X_4 = (37 \times 104 + 19)\;\mathrm{mod}(128)
+			= 3867\;\mathrm{mod}(128) = \mathbf{27}
+			\quad\Rightarrow\quad r_4 = \tfrac{27}{127} = \mathbf{0.2126}
+		\]
 
-	\textbf{Iteración 4} \;($X_3 = 104$):
-	\[
-		X_4 = (37 \times 104 + 19)\;\mathrm{mod}(128)
-		= 3867\;\mathrm{mod}(128) = \mathbf{27}
-		\quad\Rightarrow\quad r_4 = \tfrac{27}{127} = \mathbf{0.2126}
-	\]
-
-	\vspace{0.2em}
-	\textbf{Iteración 5} \;($X_4 = 27$):
-	\[
-		X_5 = (37 \times 27 + 19)\;\mathrm{mod}(128)
-		= 1018\;\mathrm{mod}(128) = \mathbf{122}
-		\quad\Rightarrow\quad r_5 = \tfrac{122}{127} = \mathbf{0.9606}
-	\]
-
-	\vspace{0.4em}
-	\begin{center}
-		\small
-		\renewcommand{\arraystretch}{1.25}
+		\vspace{0.2em}
+		\textbf{Iteración 5} \;($X_4 = 27$):
+		\[
+			X_5 = (37 \times 27 + 19)\;\mathrm{mod}(128)
+			= 1018\;\mathrm{mod}(128) = \mathbf{122}
+			\quad\Rightarrow\quad r_5 = \tfrac{122}{127} = \mathbf{0.9606}
+		\]
+		\small\centering
+		\renewcommand{\arraystretch}{1.2}
+		\setlength{\tabcolsep}{10pt}
 		\begin{tabular}{cccccc}
 			\toprule
-			$i$ & $X_{i-1}$ & $a \cdot X_{i-1}$ & $+\,c$ & $X_i \bmod 128$ & $r_i = X_i/127$ \\
+			$i$ & $X_{i-1}$ & $a \cdot X_{i-1}$ & $+\,c$ & $\mathrm{mod}(128)$ & $r_i = X_i/127$ \\
 			\midrule
-			1   & 55        & 2035              & 2054   & 6               & 0.0472          \\
-			2   & 6         & 222               & 241    & 113             & 0.8898          \\
-			3   & 113       & 4181              & 4200   & 104             & 0.8189          \\
-			4   & 104       & 3848              & 3867   & 27              & 0.2126          \\
-			5   & 27        & 999               & 1018   & 122             & 0.9606          \\
+			1   & 55        & 2035              & 2054   & 6                   & 0.0472          \\
+			2   & 6         & 222               & 241    & 113                 & 0.8898          \\
+			3   & 113       & 4181              & 4200   & 104                 & 0.8189          \\
+			4   & 104       & 3848              & 3867   & 27                  & 0.2126          \\
+			5   & 27        & 999               & 1018   & 122                 & 0.9606          \\
 			\bottomrule
 		\end{tabular}
-	\end{center}
-
+	\end{emptyblock}
 \end{frame}
 
 % ════════════════════════════════════════════════════════════
