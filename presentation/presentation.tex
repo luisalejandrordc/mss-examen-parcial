@@ -186,7 +186,8 @@
 	\begin{alertblock}{Marco Teórico}
 		\begin{itemize}
 			\justifying\small
-			\item \textbf{Entidad:} Representación de los flujos de entrada y salida (el elemento responsable de que el estado cambie).
+			\item \textbf{Sistema:} Conjunto de elementos interrelacionados para funcionar como un todo (frontera clara).
+			\item \textbf{Entidad:} Representación de los flujos de entrada y salida (es el elemento responsable de que el estado del sistema cambie).
 			\item \textbf{Estado del Sistema:} Condición que guarda el sistema bajo estudio en un momento determinado (variables puntuales o acumuladas).
 			\item \textbf{Evento:} Un cambio en el estado actual del sistema (actuales o futuros).
 			\item \textbf{Localizaciones:} Lugares donde la entidad se detiene para ser transformada o esperar.
@@ -277,92 +278,63 @@
 	\end{block}
 	\vspace{6pt}
 	\begin{alertblock}{Marco Teórico}
-		\begin{itemize}
-			\justifying\small
-			\item \textbf{Entidad:} Representación de los flujos de entrada y salida (el elemento responsable de que el estado cambie).
-			\item \textbf{Estado del Sistema:} Condición que guarda el sistema bajo estudio en un momento determinado (variables puntuales o acumuladas).
-			\item \textbf{Evento:} Un cambio en el estado actual del sistema (actuales o futuros).
-			\item \textbf{Localizaciones:} Lugares donde la entidad se detiene para ser transformada o esperar.
-			\item \textbf{Recursos:} Dispositivos necesarios para llevar a cabo una operación.
-		\end{itemize}
+		\begin{columns}[T]
+			\column{0.02\linewidth}
+
+			\column{0.44\linewidth}
+			\centering
+			\textbf{Ecuación del Promedio Móvil:}
+			\[ \bar{r}_n = \dfrac{1}{n} \sum_{i=1}^n \]
+			\[ (\text{para } n = 1, 2, ... , N) \]
+
+			\column{0.44\linewidth}
+			\justifying
+			\textbf{Definición Técnica:} En el estado transitorio existe alta variación en los valores promedio;
+			en el estado estable, los valores de las variables de decisión permanecen estables
+			con variaciones poco significativas, permitiendo decisiones confiables.
+
+			\column{0.02\linewidth}
+		\end{columns}
 	\end{alertblock}
 \end{frame}
 
-\begin{frame}{P2 · Marco Teórico}
-	\begin{columns}[T]
-		\column{0.46\linewidth}
-		\begin{block}{Ecuación del Promedio Móvil}
-			\[
-				\bar{r}_n = \frac{1}{n}\sum_{i=1}^{n} r_i
-				\quad (n = 1, 2, \ldots, N)
-			\]
-		\end{block}
-		\column{0.50\linewidth}
-		\begin{alertblock}{Estado Transitorio vs Estable}
-			\footnotesize
-			\begin{itemize}
-				\item \textbf{Transitorio:} alta variación en $\bar{r}_n$
-				\item \textbf{Estable:} $\bar{r}_n$ converge con variaciones
-				      pequeñas $\Rightarrow$ decisiones confiables
-			\end{itemize}
-		\end{alertblock}
-	\end{columns}
-	\vspace{0.35cm}
-	\begin{block}{Tabla de cálculo paso a paso}
-		\centering\footnotesize
-		\renewcommand{\arraystretch}{1.2}
-		\begin{tabular}{ccc}
-			\toprule
-			$n$      & $r_n$    & $\bar{r}_n$ \\
-			\midrule
-			1        &          &             \\
-			2        &          &             \\
-			$\vdots$ & $\vdots$ & $\vdots$    \\
-			N        &          &             \\
-			\bottomrule
-		\end{tabular}
-		\quad\textit{(completar con datos del examen)}
-	\end{block}
+\begin{frame}{Pregunta 2: Promedio Móvil y Estado Estable}
+	\begin{exampleblock}{Cálculo del Promedio Móvil}
+		\justifying
+		Con ayuda de herramientas de inteligencia artificial se ha generado un dataset sintético
+		que incluye 100 observaciones del \textbf{tiempo de procesamiento de la chancadora primaria} del
+		sistema en estudio. A continuación, se realiza el cálculo detallado del \textbf{promedio móvil}
+		para las primeras 8 observaciones (el restante fue determinado mediante un script en Python).
+		\vspace{4pt}
+		\begin{columns}[c]
+			\column{0.44\linewidth}
+			\[ \bar{r}_1 = \dfrac{12.59}{1} = 12.59 \]
+			\[ \bar{r}_2 = \dfrac{12.59 + 10.56}{2} = \dfrac{23.15}{2} = 11.575 \]
+			\[ \bar{r}_3 = \dfrac{23.15 + 13.07}{3} = \dfrac{36.22}{3} = 12.073 \]
+			\[ \bar{r}_4 = \dfrac{36.22 + 15.87}{4} = \dfrac{52.09}{4} = 13.0225 \]
+
+			\column{0.44\linewidth}
+			\[ \bar{r}_5 = \dfrac{52.09 + 10.25}{5} = \dfrac{62.34}{5} = 12.468 \]
+			\[ \bar{r}_6 = \dfrac{62.34 + 10.25}{6} = \dfrac{72.59}{6} = 12.0983 \]
+			\[ \bar{r}_7 = \dfrac{72.59 + 16.05}{7} = \dfrac{88.64}{7} = 12.6629 \]
+			\[ \bar{r}_8 = \dfrac{88.64 + 13.46}{8} = \dfrac{102.10}{8} = 12.7625 \]
+		\end{columns}
+	\end{exampleblock}
 \end{frame}
 
-\begin{frame}{P2 · Curva de Estabilización}
-	\begin{columns}[T]
-		\column{0.56\linewidth}
-		% Ejemplo de gráfico con pgfplots — reemplazar con datos reales
-		\begin{tikzpicture}
-			\begin{axis}[
-					width=7.5cm, height=5cm,
-					xlabel={Observación $n$}, ylabel={$\bar{r}_n$},
-					xmin=0, xmax=15, ymin=0, ymax=1,
-					grid=major, grid style={dotted, gray!50},
-					axis background/.style={fill=purewhite},
-					tick label style={font=\tiny},
-					label style={font=\small},
-					title style={font=\small\bfseries},
-					title={Promedio Móvil — Tiempos de Procesamiento},
-				]
-				% Reemplazar con coordenadas reales
-				\addplot[color=mediumblue, thick, mark=*,
-					mark options={fill=gold, scale=0.6}]
-				coordinates {(1,0.9)(2,0.7)(3,0.62)(4,0.55)(5,0.52)
-						(6,0.51)(7,0.50)(8,0.495)(9,0.502)(10,0.499)};
-				\addplot[color=accentred, dashed, thick]
-				coordinates {(6,0) (6,1)};
-				\node[font=\tiny, color=accentred, rotate=90, anchor=south]
-				at (axis cs:6.3,0.6) {Estado estable};
-			\end{axis}
-		\end{tikzpicture}
-		\column{0.40\linewidth}
-		\vspace{0.3cm}
-		\begin{exampleblock}{Conclusión}
-			\footnotesize
-			El sistema alcanza el estado estable a partir de la observación
-			\textbf{$n^* = \ldots$}, donde $\bar{r}_n$ permanece en
-			$[0{.}49,\,0{.}51]$.
-		\end{exampleblock}
-		\vspace{0.3cm}
-		\result{$n^* = \ldots$ \quad $\bar{r}_{n^*} \approx 0.5$}
-	\end{columns}
+\begin{frame}{Pregunta 2: Promedio Móvil y Estado Estable}
+	\begin{exampleblock}{Gráfica del Promedio Móvil}
+		\justifying
+		Con ayuda de herramientas de inteligencia artificial se ha generado un dataset sintético
+		que incluye 100 observaciones del \textbf{tiempo de procesamiento de la chancadora primaria} del
+		sistema en estudio. A continuación, se realiza el cálculo detallado del \textbf{promedio móvil}
+		para las primeras 8 observaciones (el restante fue determinado mediante un script en Python).
+		\vspace{4pt}
+		\begin{figure}
+			\centering
+			\includegraphics[width=0.2\linewidth]{unmsm_logo.png}
+		\end{figure}
+	\end{exampleblock}
 \end{frame}
 
 % ════════════════════════════════════════════════════════════
@@ -521,23 +493,17 @@
 	\end{exampleblock}
 \end{frame}
 
-% ════════════════════════════════════════════════════════════
-\section{Python Code}
-% ════════════════════════════════════════════════════════════
-
-\sectionslide{Python Code}{Uniformidad — Prueba Chi-Cuadrada}
-
 % ── Cierre ───────────────────────────────────────────────────
 {
-	\setbeamertemplate{headline}{}
-	\setbeamertemplate{footline}{}
-	\begin{frame}[plain]
-		\begin{tikzpicture}[remember picture, overlay]
-			\fill[darkblue] (current page.south west) rectangle (current page.north east);
-			\node[font=\Huge\bfseries\color{purewhite}, align=center]
-			at (current page.center) {Gracias por su atención};
-		\end{tikzpicture}
-	\end{frame}
+\setbeamertemplate{headline}{}
+\setbeamertemplate{footline}{}
+\begin{frame}[plain]
+	\begin{tikzpicture}[remember picture, overlay]
+		\fill[darkblue] (current page.south west) rectangle (current page.north east);
+		\node[font=\Huge\bfseries\color{purewhite}, align=center]
+		at (current page.center) {Gracias por su atención};
+	\end{tikzpicture}
+\end{frame}
 }
 
 \end{document}
