@@ -186,7 +186,7 @@
 \section{\textbf{Pregunta 1:} Definición del Sistema}
 % ════════════════════════════════════════════════════════════
 
-\sectionslide{Pregunta 1}{Definición del Sistema (Modelamiento Base)}
+\sectionslide{Pregunta 1}{Definición del Sistema}
 
 \begin{frame}{Pregunta 1: Definición del Sistema}
 	\begin{block}{Contexto Operativo}
@@ -676,38 +676,63 @@
 \end{frame}
 
 % ════════════════════════════════════════════════════════════
-\section{\textbf{Pregunta 3:} Algoritmo Congruencial Lineal}
+\section{\textbf{Pregunta 3:} Generación de Variables Aleatorias (ACL)}
 % ════════════════════════════════════════════════════════════
 
 \sectionslide{Pregunta 3}{Generación de Variables Aleatorias (ACL)}
 
-\begin{frame}{P3 · Ecuación Recursiva}
-	\begin{block}{Algoritmo Congruencial Lineal}
-		\[
-			X_{i+1} = (a\,X_i + c)\;\operatorname{mod}(m)
-			\qquad
-			r_i = \frac{X_i}{m-1}
-		\]
-		Parámetros: semilla $X_0$, multiplicador $a$, constante $c$, módulo $m$
-		(todos enteros $> 0$).
+\begin{frame}{Pregunta 3: Generación de Variables Aleatorias (ACL)}
+	\begin{block}{Contexto Operativo}
+		\justifying
+		Simulación estocástica de los tiempos de falla mecánica y reparación
+		logística de las perforadoras hidráulicas (\textit{jumbos}) en el frente
+		de avance. Se requiere alimentar el modelo con \textbf{números pseudoaleatorios}
+		robustos en el intervalo $(0,1)$.
 	\end{block}
-	\vspace{0.25cm}
-	\centering\footnotesize
-	\renewcommand{\arraystretch}{1.3}
-	\begin{tabular}{ccccc}
-		\toprule
-		$i$ & $X_i$ & $a\,X_i + c$ & $X_{i+1} = \operatorname{mod}(\cdot, m)$ & $r_i = X_i/(m-1)$ \\
-		\midrule
-		0   & $X_0$ &              &                                          & —                 \\
-		1   &       &              &                                          &                   \\
-		2   &       &              &                                          &                   \\
-		3   &       &              &                                          &                   \\
-		4   &       &              &                                          &                   \\
-		5   &       &              &                                          &                   \\
-		\bottomrule
-	\end{tabular}
-	\par\vspace{0.15cm}
-	\textit{(Completar con los parámetros dictados en pizarra)}
+	\vspace{6pt}
+	\begin{alertblock}{Marco Teórico}
+		\justifying\small
+		Los \textbf{números pseudoaleatorios} $r_i$ son valores generados
+		por algoritmos determinísticos que buscan reproducir las propiedades
+		estadísticas de una secuencia aleatoria. Uno de los métodos más
+		utilizados para su generación es el \textbf{Algoritmo Congruencial
+			Lineal (ACL)}, detallado a continuación:\\[6pt]
+		\textbf{Ecuación recursiva:} $\qquad X_{i+1} \;=\; (a \cdot X_i + c)\;\mathrm{mod}(m) \qquad	(i = 0,1,2,\ldots,n)$\\[6pt]
+		\textbf{Generación en $(0,1)$:} $\qquad r_i \;=\; \dfrac{X_i}{m-1}$\\[6pt]
+		donde $X_0$ es la semilla, $a$ la constante multiplicativa,
+		$c$ la constante aditiva y $m$ el módulo.
+		Todos deben ser enteros positivos ($X_0,a,c,m > 0$).
+	\end{alertblock}
+\end{frame}
+
+\begin{frame}{Pregunta 3: Generación de Variables Aleatorias (ACL)}
+	\begin{exampleblock}{Periodo de Vida}
+		El generador produce una secuencia $S = \{0,1,\ldots,m{-}1\}$ que
+		inevitablemente se repite. La longitud antes de la repetición se denomina
+		\textbf{período de vida} $N$, con $N \leq m$.
+
+		\vspace{0.4em}
+		Para alcanzar el \textbf{período máximo} $N = m$, se deben cumplir las siguientes condiciones:
+
+		\vspace{0.3em}
+		\begin{center}
+			\renewcommand{\arraystretch}{1.35}
+			\begin{tabular}{cll}
+				\toprule
+				\textbf{Parámetro} & \textbf{Condición}                                   & \textbf{Razón} \\
+				\midrule
+				$m$                & $m = 2^{g}$, \;$g$ entero
+				                   & Módulo potencia de 2                                                  \\
+				$a$                & $a = 1 + 4k$, \;$k$ entero \;($a \equiv 1 \pmod{4}$)
+				                   & Garantiza ciclo completo                                              \\
+				$c$                & $\gcd(c,\,m) = 1$
+				                   & $c$ debe ser impar (ya que $m=2^g$)                                   \\
+				$X_0$              & $0 < X_0 < m$, entero
+				                   & Cualquier semilla válida                                              \\
+				\bottomrule
+			\end{tabular}
+		\end{center}
+	\end{exampleblock}
 \end{frame}
 
 % ════════════════════════════════════════════════════════════
