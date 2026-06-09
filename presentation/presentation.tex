@@ -367,7 +367,7 @@
 \begin{frame}{Pregunta 2: Promedio Móvil y Estado Estable}
 	\begin{alertblock}{Método 1: Criterio de Cambio Relativo}
 		\justifying
-		El estado estable inicia cuando el promedio móvil deja de cambiar de forma
+		\textbf{Idea central:} El estado estable inicia cuando el promedio móvil deja de cambiar de forma
 		significativa entre observaciones consecutivas.\\[4pt]
 		\textbf{Estadístico:}
 		\[
@@ -376,8 +376,8 @@
 
 		\textbf{Criterio de parada} (ventana $w = \lfloor N/10 \rfloor$):
 		\[
-			\hat{n}_{\text{wu}} = \min\bigl\{\,n : \delta_n, \delta_{n+1}, \ldots,
-			\delta_{n+w-1} < \tau\,\bigr\}
+			\hat{n}_{\text{wu}} = \min\bigl\{\,n :
+			\delta_{k} < \tau \,,\, \forall \, k \in \{n, \ldots, n+w-1\} \,\bigr\}
 			\qquad \tau = 2\%
 		\]
 		La exigencia de \textit{w observaciones consecutivas} bajo el umbral
@@ -413,34 +413,45 @@
 \begin{frame}{Pregunta 2: Promedio Móvil y Estado Estable}
 	\begin{alertblock}{Método 2: Método Gráfico de Welch (1983)}
 		\justifying
-		El estado estable inicia cuando el promedio móvil deja de cambiar de forma
-		significativa entre observaciones consecutivas.\\[4pt]
-		\textbf{Estadístico:}
-		\[
-			\delta_n \;=\; \left|\frac{\bar{r}_n - \bar{r}_{n-1}}{\bar{r}_{n-1}}\right|
-		\]
-
-		\textbf{Criterio de parada} (ventana $w = \lfloor N/10 \rfloor$):
-		\[
-			\hat{n}_{\text{wu}} = \min\bigl\{\,n : \delta_n, \delta_{n+1}, \ldots,
-			\delta_{n+w-1} < \tau\,\bigr\}
-			\qquad \tau = 2\%
-		\]
-		La exigencia de \textit{w observaciones consecutivas} bajo el umbral
-		evita falsos positivos causados por valores atípicos aislados.\\[4pt]
+		\textbf{Idea central:} Suavizar el promedio móvil con una ventana centrada para eliminar
+		ruido local, y detectar cuándo la curva suavizada entra y permanece
+		dentro de una banda de estabilidad alrededor de la media global.\\[4pt]
+		\begin{columns}[T]
+			\begin{column}{0.45\textwidth}
+				\textbf{Promedio suavizado} (ventana $w_s$):
+				\[
+					\tilde{r}_n \;=\; \frac{1}{w_s}\sum_{j=n-\lfloor (w_s-1)/2\rfloor}^{n+\lceil (w_s-1)/2\rceil} \bar{r}_j
+				\]
+			\end{column}
+			\begin{column}{0.45\textwidth}
+				\textbf{Criterio de parada} (banda $\pm 5\%$ de la media global $\mu$):
+				\[
+					\begin{aligned}
+						\hat{n}_{\text{wu}}
+						 & =
+						\min\Bigl\{\,n :
+						|\tilde{r}_{k} - \mu| < 0.05\,\mu,             \\
+						 & \qquad \forall\, k \in \{n, \ldots, n+w-1\}
+						\,\Bigr\}
+					\end{aligned}
+				\]
+			\end{column}
+		\end{columns}
+		\vspace{4pt}
+		Donde $\mu$ representa una estimación de la media en régimen estacionario.\\[4pt]
 		\begin{columns}[T]
 			\begin{column}{0.45\textwidth}
 				\textbf{Ventajas}
 				\begin{itemize}\small
-					\item Intuitivo y fácil de calibrar
-					\item Bajo costo computacional
+					\item Estándar bibliográfico
+					\item Robusto ante ruido local
 				\end{itemize}
 			\end{column}
 			\begin{column}{0.45\textwidth}
 				\textbf{Limitaciones}
 				\begin{itemize}\small
-					\item Sensible a la elección de $\tau$
-					\item Puede activarse tarde con series ruidosas
+					\item El tamaño $w_s$ debe elegirse manualmente
+					\item Origen puramente gráfico
 				\end{itemize}
 			\end{column}
 		\end{columns}
@@ -448,12 +459,12 @@
 \end{frame}
 
 \begin{frame}{Pregunta 2: Promedio Móvil y Estado Estable}
-	\begin{alertblock}{Método 1: Criterio de Cambio Relativo}
+	\begin{emptyblock}{}
 		\justifying
-		\textbf{Resultado:} El estado estable comienza a partir de la observación N°15.\\[8pt]
+		\textbf{Resultado:} El estado estable comienza a partir de la observación N°14.\\[8pt]
 		\centering
-		\includegraphics[width=0.95\linewidth]{method-1.png}
-	\end{alertblock}
+		\includegraphics[width=0.95\linewidth]{method-2.png}
+	\end{emptyblock}
 \end{frame}
 
 % ════════════════════════════════════════════════════════════
