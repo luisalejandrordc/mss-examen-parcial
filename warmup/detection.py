@@ -28,7 +28,7 @@ def _validate_input(data: np.ndarray):
 # METHOD 1 — Relative Change Criterion
 # ══════════════════════════════════════════════════════════════════════════════
 def method_relative_change(
-    data: np.ndarray, threshold: float = 0.015, window: Optional[int] = None
+    data: np.ndarray, threshold: float = 0.02, window: Optional[int] = None
 ) -> WarmupResult[RelativeChange]:
     """
     Warm-up ends at the first index i such that all relative changes

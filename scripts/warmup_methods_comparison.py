@@ -46,9 +46,7 @@ wu5 = method_backward_cusum(data)
 print("=" * 55)
 print(f"  {'Method':<35} {'Warm-up':>8}")
 print("=" * 55)
-print(
-    f"  {'1. Relative Change (' + str(wu1.diagnostics["threshold"] * 100) + '%, w=10)':<35} {wu1.warmup:>8}"
-)
+print(f"  {'1. Relative Change (2%, w=10)':<35} {wu1.warmup:>8}")
 print(f"  {'2. Welch Graphical (±5% band)':<35} {wu2.warmup:>8}")
 print(f"  {'3. CI Width Stabilization':<35} {wu3.warmup:>8}")
 print(f"  {'4. Forward CUSUM (k=0.5σ, h=4σ)':<35} {wu4.warmup:>8}")
@@ -102,7 +100,7 @@ ax1.axvline(
 ax1b = ax1.twinx()
 ax1b.plot(
     idx,
-    wu1.diagnostics["rel_change"] * 100,
+    wu1.info.rel_change * 100,
     color=COLORS["m1"],
     lw=0.8,
     alpha=0.6,
@@ -110,11 +108,12 @@ ax1b.plot(
     label="Rel. change (%)",
 )
 ax1b.axhline(
-    wu1.diagnostics["threshold"] * 100,
+    wu1.info.threshold * 100,
     color=COLORS["m1"],
     lw=0.6,
     linestyle="-.",
     alpha=0.5,
+    label="Threshold",
 )
 ax1b.tick_params(colors="#abb2bf", labelsize=7)
 ax1b.set_ylim(0, 20)
@@ -136,21 +135,19 @@ ax1.legend(
 ax2 = fig.add_subplot(gs[0, 1])
 style_ax(ax2, "Method 2 — Welch's Graphical Method", COLORS["m2"])
 ax2.plot(idx, running_avg, color=COLORS["avg"], lw=1, alpha=0.5, label="Running avg")
-ax2.plot(
-    idx, wu2.diagnostics["smoothed"], color=COLORS["m2"], lw=2, label="Smoothed avg"
-)
+ax2.plot(idx, wu2.info.smoothed, color=COLORS["m2"], lw=2, label="Smoothed avg")
 ax2.axhline(
-    wu2.diagnostics["grand_mean"],
+    wu2.info.grand_mean,
     color=COLORS["m2"],
     lw=0.8,
     linestyle="--",
     alpha=0.6,
-    label=f"Grand mean={wu2.diagnostics["grand_mean"]:.3f}",
+    label=f"Grand mean={wu2.info.grand_mean:.3f}",
 )
 ax2.fill_between(
     idx,
-    wu2.diagnostics["grand_mean"] - wu2.diagnostics["band"],
-    wu2.diagnostics["grand_mean"] + wu2.diagnostics["band"],
+    wu2.info.grand_mean - wu2.info.band,
+    wu2.info.grand_mean + wu2.info.band,
     color=COLORS["m2"],
     alpha=0.08,
     label="±5% stability band",
@@ -177,8 +174,8 @@ style_ax(ax3, "Method 3 — CI Width Stabilization", COLORS["m3"])
 ax3.plot(idx, running_avg, color=COLORS["avg"], lw=1.5, label="Running avg")
 ax3.fill_between(
     idx,
-    running_avg - wu3.diagnostics["ci_margin"],
-    running_avg + wu3.diagnostics["ci_margin"],
+    running_avg - wu3.info.ci_margin,
+    running_avg + wu3.info.ci_margin,
     color=COLORS["m3"],
     alpha=0.15,
     label="95% CI",
@@ -193,7 +190,7 @@ ax3.axvline(
 ax3b = ax3.twinx()
 ax3b.plot(
     idx,
-    wu3.diagnostics["rel_reduction"] * 100,
+    wu3.info.rel_reduction * 100,
     color=COLORS["m3"],
     lw=1,
     linestyle=":",
@@ -201,11 +198,12 @@ ax3b.plot(
     label="Rel. reduction (%)",
 )
 ax3b.axhline(
-    wu3.diagnostics["threshold"] * 100,
+    wu3.info.threshold * 100,
     color=COLORS["m3"],
     lw=0.6,
     linestyle="-.",
     alpha=0.5,
+    label="Threshold",
 )
 ax3b.tick_params(colors="#abb2bf", labelsize=7)
 ax3b.set_ylim(0, 20)
@@ -226,22 +224,15 @@ ax3.legend(
 # ── Panel 4: Forward CUSUM ────────────────────────────────────────────────────────────
 ax4 = fig.add_subplot(gs[1, 1])
 style_ax(ax4, "Method 4 — Forward CUSUM Control Chart", COLORS["m4"])
-ax4.plot(idx, wu4.diagnostics["C_plus"], color=COLORS["m4"], lw=1.5, label="C⁺ (upper)")
-ax4.plot(
-    idx,
-    wu4.diagnostics["C_minus"],
-    color="#e06c75",
-    lw=1.5,
-    linestyle="--",
-    label="C⁻ (lower)",
-)
+ax4.plot(idx, wu4.info.c_plus, color=COLORS["m4"], lw=1.5, label="C⁺ (upper)")
+ax4.plot(idx, wu4.info.c_minus, color="#e06c75", lw=1.5, label="C⁻ (lower)")
 ax4.axhline(
-    wu4.diagnostics["h"],
+    wu4.info.h,
     color=COLORS["m4"],
     lw=1,
     linestyle="-.",
     alpha=0.7,
-    label=f"Decision limit h={wu4.diagnostics["h"]:.2f}",
+    label=f"Decision limit h={wu4.info.h:.2f}",
 )
 ax4.axvline(
     wu4.warmup,
@@ -262,22 +253,15 @@ ax4.legend(
 # ── Panel 5: Backward CUSUM ────────────────────────────────────────────────────────────
 ax5 = fig.add_subplot(gs[2, 0])
 style_ax(ax5, "Method 5 — Backward CUSUM Control Chart", COLORS["m5"])
-ax5.plot(idx, wu5.diagnostics["C_plus"], color=COLORS["m5"], lw=1.5, label="C⁺ (upper)")
-ax5.plot(
-    idx,
-    wu5.diagnostics["C_minus"],
-    color="#e06c75",
-    lw=1.5,
-    linestyle="--",
-    label="C⁻ (lower)",
-)
+ax5.plot(idx, wu5.info.c_plus, color=COLORS["m5"], lw=1.5, label="C⁺ (upper)")
+ax5.plot(idx, wu5.info.c_minus, color="#e06c75", lw=1.5, label="C⁻ (lower)")
 ax5.axhline(
-    wu5.diagnostics["h"],
+    wu5.info.h,
     color=COLORS["m5"],
     lw=1,
     linestyle="-.",
     alpha=0.7,
-    label=f"Decision limit h={wu5.diagnostics["h"]:.2f}",
+    label=f"Decision limit h={wu5.info.h:.2f}",
 )
 ax5.axvline(
     wu5.warmup,
