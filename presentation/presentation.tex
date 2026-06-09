@@ -285,7 +285,7 @@
 			\centering
 			\textbf{Ecuación del Promedio Móvil:}
 			\[ \bar{r}_n = \dfrac{1}{n} \sum_{i=1}^n \]
-			\[ (\text{para } n = 1, 2, ... , N) \]
+			\[ (\text{para } n = 1, 2, \ldots , N) \]
 
 			\column{0.44\linewidth}
 			\justifying
@@ -301,9 +301,9 @@
 \begin{frame}{Pregunta 2: Promedio Móvil y Estado Estable}
 	\begin{exampleblock}{Cálculo del Promedio Móvil}
 		\justifying
-		Con ayuda de herramientas de inteligencia artificial se ha generado un dataset sintético
-		que incluye 100 observaciones del \textbf{tiempo de procesamiento de la chancadora primaria} del
-		sistema en estudio. A continuación, se realiza el cálculo detallado del \textbf{promedio móvil}
+		Con ayuda de inteligencia artificial se generó un dataset sintético de 100
+		observaciones $r_i$ para el \textbf{tiempo de procesamiento de la chancadora primaria} del
+		sistema en estudio. A continuación, se detalla el cálculo del \textbf{promedio móvil}
 		para las primeras 8 observaciones (el restante fue determinado mediante un script en Python).
 		\vspace{4pt}
 		\begin{columns}[c]
@@ -323,14 +323,69 @@
 \end{frame}
 
 \begin{frame}{Pregunta 2: Promedio Móvil y Estado Estable}
-	\begin{exampleblock}{Gráfica del Promedio Móvil}
+	\begin{exampleblock}{Curva de Estabilización}
 		\justifying
 		Empleando las librerías \textit{pandas}, \textit{numpy} y \textit{matplotlib} se realizó
-		la gráfica del promedio móvil para la variable seleccionada. Esta también recibe el
+		la gráfica del promedio móvil $\bar{r}_n$ para las 100 observaciones. Esta recibe el
 		nombre de \textbf{Curva de Estabilización}.\\[8pt]
 		\centering
 		\includegraphics[width=0.7\linewidth]{stabilization-curve.png}
 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}{Pregunta 2: Promedio Móvil y Estado Estable}
+	\begin{exampleblock}{Determinación del estado estable}
+		\justifying
+		Determinar matemáticamente el momento exacto en el que un sistema abandona su estado
+		transitorio e ingresa al estado estable no es una tarea sencilla. Debido a ello, se han
+		propuesto diversos criterios estadísticos y gráficos para identificar este punto de manera
+		objetiva. A continuación, se presentan cinco métodos ampliamente utilizados para detectar
+		el denominado \textbf{warm-up point}.\\[6pt]
+		\begin{itemize}
+			\item Método 1: Criterio de Cambio Relativo
+			\item Método 2: Método Gráfico de Welch (1983)
+			\item Método 3: Estabilización del Ancho del IC
+			\item Método 4: CUSUM Directo (\textit{Forward CUSUM})
+			\item Método 5: CUSUM Inverso (\textit{Backward CUSUM})
+		\end{itemize}
+	\end{exampleblock}
+\end{frame}
+
+\begin{frame}{Pregunta 2: Promedio Móvil y Estado Estable}
+	\begin{alertblock}{Metodo 1: Criterio de Cambio Relativo}
+		\justifying
+		El estado estable inicia cuando el promedio móvil deja de cambiar de forma
+		significativa entre observaciones consecutivas.\\[4pt]
+		\textbf{Estadístico:}
+		\[
+			\delta_n \;=\; \left|\frac{\bar{r}_n - \bar{r}_{n-1}}{\bar{r}_{n-1}}\right|
+		\]
+
+		\textbf{Criterio de parada} (ventana $w = \lfloor N/10 \rfloor$):
+		\[
+			\hat{n}_{\text{wu}} = \min\bigl\{\,n : \delta_n, \delta_{n+1}, \ldots,
+			\delta_{n+w-1} < \tau\,\bigr\}
+			\qquad \tau = 2\%
+		\]
+		La exigencia de \textit{w observaciones consecutivas} bajo el umbral
+		evita falsos positivos causados por valores atípicos aislados.\\[4pt]
+		\begin{columns}[T]
+			\begin{column}{0.45\textwidth}
+				\textbf{Ventajas}
+				\begin{itemize}\small
+					\item Intuitivo y fácil de calibrar
+					\item Bajo costo computacional
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.45\textwidth}
+				\textbf{Limitaciones}
+				\begin{itemize}\small
+					\item Sensible a la elección de $\tau$
+					\item Puede activarse tarde con series ruidosas
+				\end{itemize}
+			\end{column}
+		\end{columns}
+	\end{alertblock}
 \end{frame}
 
 % ════════════════════════════════════════════════════════════

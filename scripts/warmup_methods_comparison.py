@@ -220,8 +220,8 @@ ax3.legend(
 # ── Panel 4: Forward CUSUM ────────────────────────────────────────────────────────────
 ax4 = fig.add_subplot(gs[1, 1])
 style_ax(ax4, "Method 4 — Forward CUSUM Control Chart", COLORS["m4"])
-ax4.plot(idx, wu4.info.c_plus, color=COLORS["m4"], lw=1.5, label="C⁺ (upper)")
-ax4.plot(idx, wu4.info.c_minus, color="#e06c75", lw=1.5, label="C⁻ (lower)")
+ax4.plot(idx, wu4.info.c_plus, color="#56b6c2", alpha=0.9, lw=1.5, label="C⁺ (upper)")
+ax4.plot(idx, wu4.info.c_minus, color="#e06c75", alpha=0.9, lw=1.5, label="C⁻ (lower)")
 ax4.axhline(
     wu4.info.h,
     color=COLORS["m4"],
@@ -249,8 +249,8 @@ ax4.legend(
 # ── Panel 5: Backward CUSUM ────────────────────────────────────────────────────────────
 ax5 = fig.add_subplot(gs[2, 0])
 style_ax(ax5, "Method 5 — Backward CUSUM Control Chart", COLORS["m5"])
-ax5.plot(idx, wu5.info.c_plus, color=COLORS["m5"], lw=1.5, label="C⁺ (upper)")
-ax5.plot(idx, wu5.info.c_minus, color="#e06c75", lw=1.5, label="C⁻ (lower)")
+ax5.plot(idx, wu5.info.c_plus, color="#56b6c2", alpha=0.9, lw=1.5, label="C⁺ (upper)")
+ax5.plot(idx, wu5.info.c_minus, color="#e06c75", alpha=0.9, lw=1.5, label="C⁻ (lower)")
 ax5.axhline(
     wu5.info.h,
     color=COLORS["m5"],
@@ -318,8 +318,10 @@ fig.suptitle(
     y=0.98,
 )
 
-plt.savefig(
-    "warmup_comparison.png", dpi=150, bbox_inches="tight", facecolor=fig.get_facecolor()
-)
+# ── Saving picture ────────────────────────────────────────────────────────────
+# plt.savefig(
+#     "warmup_comparison.png", dpi=150, bbox_inches="tight", facecolor=fig.get_facecolor()
+# )
+# print("\nFigure saved as warmup_comparison.png")
+
 plt.show()
-print("\nFigure saved as warmup_comparison.png")
