@@ -120,7 +120,7 @@
 \makeatletter
 \patchcmd{\beamer@sectionintoc}
   {\vskip1.5em}
-  {\vskip1.0em}
+  {\vskip1.5em}
   {}
   {}
 \makeatother
@@ -805,12 +805,33 @@
 \end{frame}
 
 % ════════════════════════════════════════════════════════════
-\section{\textbf{Pregunta 4:} Prueba de Medias}
+\section{\textbf{Pregunta 4:} Validación Estadística — Prueba de Medias}
 % ════════════════════════════════════════════════════════════
 
 \sectionslide{Pregunta 4}{Validación Estadística — Prueba de Medias}
 
-\begin{frame}{P4 · Hipótesis y Límites de Aceptación}
+\begin{frame}{Pregunta 4: Validación Estadística — Prueba de Medias}
+	\begin{block}{Contexto Operativo}
+		\justifying
+		Sistema de carga y transporte de mineral en \textbf{minería subterránea}.
+		Flotilla de volquetes que ingresa de manera \textbf{estocástica} a la zona de
+		chancado (molienda) primario.
+	\end{block}
+	\vspace{6pt}
+	\begin{alertblock}{Marco Teórico}
+		\begin{itemize}
+			\justifying\small
+			\item \textbf{Sistema:} Conjunto de elementos interrelacionados para funcionar como un todo (frontera clara).
+			\item \textbf{Entidad:} Representación de los flujos de entrada y salida (es el elemento responsable de que el estado del sistema cambie).
+			\item \textbf{Estado del Sistema:} Condición que guarda el sistema bajo estudio en un momento determinado (variables puntuales o acumuladas).
+			\item \textbf{Evento:} Un cambio en el estado actual del sistema (actuales o futuros).
+			\item \textbf{Localizaciones:} Lugares donde la entidad se detiene para ser transformada o esperar.
+			\item \textbf{Recursos:} Dispositivos necesarios para llevar a cabo una operación.
+		\end{itemize}
+	\end{alertblock}
+\end{frame}
+
+\begin{frame}{Pregunta 4: Validación Estadística — Prueba de Medias}
 	\begin{columns}[T]
 		\column{0.48\linewidth}
 		\begin{alertblock}{Hipótesis}
@@ -847,12 +868,12 @@
 \end{frame}
 
 % ════════════════════════════════════════════════════════════
-\section{\textbf{Pregunta 5:} Prueba de Varianza}
+\section{\textbf{Pregunta 5:} Validación Estadística — Prueba de Varianza}
 % ════════════════════════════════════════════════════════════
 
 \sectionslide{Pregunta 5}{Validación Estadística — Prueba de Varianza}
 
-\begin{frame}{P5 · Prueba Chi-Cuadrada (Varianza)}
+\begin{frame}{Pregunta 5: Validación Estadística — Prueba de Varianza}
 	\begin{columns}[T]
 		\column{0.48\linewidth}
 		\begin{alertblock}{Hipótesis}
@@ -884,12 +905,12 @@
 \end{frame}
 
 % ════════════════════════════════════════════════════════════
-\section{\textbf{Pregunta 6:} Prueba de Uniformidad Chi-Cuadrada}
+\section{\textbf{Pregunta 6:} Validación Estadística — Prueba de Uniformidad}
 % ════════════════════════════════════════════════════════════
 
-\sectionslide{Pregunta 6}{Uniformidad — Prueba Chi-Cuadrada}
+\sectionslide{Pregunta 6}{Validación Estadística — Prueba de Uniformidad}
 
-\begin{frame}{P6 · Estadístico de Prueba}
+\begin{frame}{Pregunta 6: Validación Estadística — Prueba de Uniformidad}
 	\begin{block}{Hipótesis y formulación}
 		\[
 			H_0: r_i \sim U(0,1)
@@ -925,7 +946,7 @@
 	\end{exampleblock}
 \end{frame}
 
-% ── Cierre ───────────────────────────────────────────────────
+% ── Ending ───────────────────────────────────────────────────
 {
 \setbeamertemplate{headline}{}
 \setbeamertemplate{footline}{}

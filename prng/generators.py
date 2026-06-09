@@ -1,7 +1,19 @@
 # ══════════════════════════════════════════════════════════════════════════════
-# Linear Congruential Generator (LCG)
-# It is one of the oldest most widely used pseudorandom number
-# generators (PRNG) in computer science.
+# PseudoRandom Number Generators (PRNG)
+
+# Non-Congruential Methods:
+#   - Middle-Square Method
+#   - Middle-Product Method
+#   - Constant Multiplier Method
+
+# Congruential Methods:
+#   Linear:
+#       - Linear Congruential Generator (LCG)
+#       - Multiplicative Congruential Generator
+#       - Additive Congruential Generator
+#   Non-Linear:
+#       - Quadratic Congruential Generator
+#       - Blum Blum Shub Generator (Cryptographic PRNG)
 # ══════════════════════════════════════════════════════════════════════════════
 
 import numpy as np
