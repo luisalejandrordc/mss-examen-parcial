@@ -706,67 +706,35 @@
 \end{frame}
 
 \begin{frame}{Pregunta 3: Generación de Variables Aleatorias (ACL)}
-	\begin{exampleblock}{Periodo de Vida}
+	\begin{exampleblock}{Selección de Parámetros}
 		El generador produce una secuencia $S = \{0,1,\ldots,m{-}1\}$ que
 		inevitablemente se repite. La longitud antes de la repetición se denomina
 		\textbf{período de vida} $N$, con $N \leq m$.
 
 		\vspace{0.4em}
-		Para alcanzar el \textbf{período máximo} $N = m$, se deben cumplir las siguientes condiciones:
+		Para alcanzar el \textbf{período máximo} ($N = m$), se deben cumplir las siguientes condiciones:
 
 		\vspace{0.3em}
 		\begin{center}
 			\renewcommand{\arraystretch}{1.35}
-			\begin{tabular}{cll}
+			\setlength{\tabcolsep}{10pt}
+			\begin{tabular}{cllll}
 				\toprule
-				\textbf{Parámetro} & \textbf{Condición}                                   & \textbf{Razón} \\
+				\textbf{Parámetro} & \textbf{Condición}                  & \textbf{Requisito} & \textbf{Selección} & \\
 				\midrule
-				$m$                & $m = 2^{g}$, \;$g$ entero
-				                   & Módulo potencia de 2                                                  \\
-				$a$                & $a = 1 + 4k$, \;$k$ entero \;($a \equiv 1 \pmod{4}$)
-				                   & Garantiza ciclo completo                                              \\
-				$c$                & $\gcd(c,\,m) = 1$
-				                   & $c$ debe ser impar (ya que $m=2^g$)                                   \\
-				$X_0$              & $0 < X_0 < m$, entero
-				                   & Cualquier semilla válida                                              \\
+				$m$                & $m = 2^{g}$                         & $g$ entero
+				                   & $2^7=128$                           & \checkmark                                \\
+				$a$                & $a = 1 + 4k$                        & $k$ entero
+				                   & $1 + 4(9) = 37$                     & \checkmark                                \\
+				$c$                & $\gcd(c,\,m) = 1$                   & $c$ impar
+				                   & $19 \rightarrow \gcd(19,\,128) = 1$ & \checkmark                                \\
+				$X_0$              & $0 < X_0 < m$                       & $X_0$ entero
+				                   & $55 \rightarrow 0 < 55 < 128$       & \checkmark                                \\
 				\bottomrule
 			\end{tabular}
 		\end{center}
-	\end{exampleblock}
-\end{frame}
-
-\begin{frame}{Pregunta 3: Generación de Variables Aleatorias (ACL)}
-
-	\begin{exampleblock}{Selección de Parámetros}
-		\[
-			X_0 = 55 \qquad a = 37 \qquad c = 19 \qquad m = 2^7 = 128
-		\]
-		\begin{center}
-			\renewcommand{\arraystretch}{1.3}
-			\begin{tabular}{clll}
-				\toprule
-				\textbf{Condición} & \textbf{Requisito}                       & \textbf{Cálculo} & \\
-				\midrule
-				$m = 2^g$
-				                   & $g$ entero
-				                   & $m = 2^7 = 128$
-				                   & \checkmark                                                    \\
-				$a = 1+4k$
-				                   & $k$ entero
-				                   & $a = 1 + 4(9) = 37$, \; $37 \bmod 4 = 1$
-				                   & \checkmark                                                    \\
-				$\gcd(c,m)=1$
-				                   & $c$ impar
-				                   & $\gcd(19,\,128) = 1$ \;(19 primo)
-				                   & \checkmark                                                    \\
-				$0 < X_0 < m$
-				                   & entero positivo
-				                   & $0 < 55 < 128$
-				                   & \checkmark                                                    \\
-				\bottomrule
-			\end{tabular}
-		\end{center}
-		\textbf{Periodo de vida garantizado:} $N \;=\; m \;=\; 2^7 \;=\; \mathbf{128}$
+		\vspace{4pt}
+		\[ X_0 = 55 \qquad a = 37 \qquad c = 19 \qquad m = 128 \qquad \rightarrow \qquad N_{\text{garantizado}} \;=\; \mathbf{128}\]
 	\end{exampleblock}
 \end{frame}
 
