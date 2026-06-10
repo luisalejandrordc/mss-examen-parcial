@@ -928,87 +928,48 @@
 	\end{exampleblock}
 \end{frame}
 
+\begin{frame}{Pregunta 4: Validación Estadística — Prueba de Medias}
+	\begin{exampleblock}{Cálculo del Promedio y Límites}
+		\textbf{Parámetros:} $n = 100$,\; $\alpha = 0.05$,\;
+		$z_{0.025} = 1.96$ \textnormal{(tabla normal estándar)}
 
-
-
-
-
-
-
-
-
-\begin{frame}{Aplicación Numérica}
-
-	\textbf{Parámetros:} $n = 100$, \;$\alpha = 0.05$, \;$z_{0.025} = 1.96$
-
-	\vspace{0.5em}
-	\textbf{1. Promedio muestral:}
-	\[
-		\bar{r} \;=\; \frac{1}{100}\sum_{i=1}^{100} r_i
-		\;=\; \frac{46.5748}{100} \;=\; \mathbf{0.4657}
-	\]
-
-	\vspace{0.4em}
-	\textbf{2. Límite inferior:}
-	\[
-		LI \;=\; 0.5 - 1.96\cdot\frac{1}{\sqrt{12 \times 100}}
-		\;=\; 0.5 - 1.96\cdot 0.028868
-		\;=\; \mathbf{0.4434}
-	\]
-
-	\vspace{0.4em}
-	\textbf{3. Límite superior:}
-	\[
-		LS \;=\; 0.5 + 1.96\cdot\frac{1}{\sqrt{12 \times 100}}
-		\;=\; 0.5 + 1.96\cdot 0.028868
-		\;=\; \mathbf{0.5566}
-	\]
-
-	\vspace{0.5em}
-	\begin{block}{Verificación}
+		\vspace{0.5em}
+		\textbf{1.\ Promedio muestral:}
 		\[
-			LI \;\leq\; \bar{r} \;\leq\; LS
-			\quad\Longrightarrow\quad
-			0.4434 \;\leq\; 0.4657 \;\leq\; 0.5566 \quad \checkmark
+			\bar{r} \;=\; \frac{1}{100}\sum_{i=1}^{100} r_i
+			\;=\; \frac{46.5746}{100} \;=\; \mathbf{0.4657}
 		\]
-	\end{block}
-
+		\textbf{2. Límite inferior:}
+		\[
+			LI \;=\; 0.5 - 1.96\cdot\frac{1}{\sqrt{12 \times 100}}
+			\;=\; 0.5 - 1.96\cdot 0.028868
+			\;=\; \mathbf{0.4434}
+		\]
+		\textbf{3. Límite superior:}
+		\[
+			LS \;=\; 0.5 + 1.96\cdot\frac{1}{\sqrt{12 \times 100}}
+			\;=\; 0.5 + 1.96\cdot 0.028868
+			\;=\; \mathbf{0.5566}
+		\]
+		\vspace{-6pt}
+	\end{exampleblock}
 \end{frame}
 
 \begin{frame}{Conclusión — Prueba de Medias}
-
-	\begin{center}
-		\renewcommand{\arraystretch}{1.3}
-		\begin{tabular}{lc}
-			\toprule
-			\textbf{Elemento}               & \textbf{Valor} \\
-			\midrule
-			Tamaño de muestra $n$           & 100            \\
-			Nivel de significancia $\alpha$ & 0.05           \\
-			$z_{\alpha/2} = z_{0.025}$      & 1.96           \\
-			Promedio muestral $\bar{r}$     & 0.4657         \\
-			Límite inferior $LI$            & 0.4434         \\
-			Límite superior $LS$            & 0.5566         \\
-			$\bar{r} \in [LI,\,LS]$?        & Sí \checkmark  \\
-			\bottomrule
-		\end{tabular}
-	\end{center}
-
-	\vspace{0.5em}
-	\begin{alertblock}{Conclusión estadística}
-		Como $\bar{r} = 0.4657$ se encuentra dentro del intervalo de aceptación
-		$[0.4434,\;0.5566]$, \textbf{no se rechaza $H_0$} con un nivel de
-		confianza del 95\%.
-		Se concluye que el conjunto de 100 números pseudoaleatorios
-		\textbf{tiene un valor esperado estadísticamente compatible con 0.5},
-		validando la imparcialidad del generador ACL utilizado.
-	\end{alertblock}
-
-	\vspace{0.3em}
-	\small\textit{Nota:} Al recibir los datos del profesor, reemplazar
-	$\bar{r}$, $n$ y $\alpha$; la estructura del argumento y las fórmulas
-	son idénticas.
-
+	\begin{exampleblock}{Conclusión Estadística}
+		\justifying
+		Como $\bar{r} = 0.4657 \in [0.4434,\;0.5566]$,
+		\textbf{no se rechaza $H_0$} al 95\% de confianza.
+		El conjunto de 100 números pseudoaleatorios tiene un valor esperado
+		estadísticamente compatible con $0.5$, validando la
+		\textbf{imparcialidad} del generador ACL utilizado.
+		\[
+			LI \;\leq\; \bar{r} \;\leq\; LS
+			\quad\Longrightarrow\quad
+			0.4434 \;\leq\; \mathbf{0.4657} \;\leq\; 0.5566
+			\quad\checkmark
+		\]
+	\end{exampleblock}
 \end{frame}
 
 % ════════════════════════════════════════════════════════════
