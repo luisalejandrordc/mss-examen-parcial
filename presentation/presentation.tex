@@ -918,10 +918,10 @@
 			\setlength{\tabcolsep}{12pt}
 			\begin{tabular}{ll}
 				\toprule
-				\textbf{Condición}              & \textbf{Decisión} \\
+				\textbf{Condición}                   & \textbf{Decisión} \\
 				\midrule
-				$LI \leq \bar{r} \leq LS$       & No rechazar $H_0$ \\
-				$\bar{r} < LI$ o $\bar{r} > LS$ & Rechazar $H_0$    \\
+				$LI \leq \bar{r} \leq LS$            & No rechazar $H_0$ \\
+				$\bar{r} < LI \;\lor\; \bar{r} > LS$ & Rechazar $H_0$    \\
 				\bottomrule
 			\end{tabular}
 		\end{center}
@@ -986,35 +986,222 @@
 \sectionslide{Pregunta 5}{Validación Estadística — Prueba de Varianza}
 
 \begin{frame}{Pregunta 5: Validación Estadística — Prueba de Varianza}
-	\begin{columns}[T]
-		\column{0.48\linewidth}
-		\begin{alertblock}{Hipótesis}
-			\[
-				H_0: \sigma^2 = \tfrac{1}{12} \quad \text{vs} \quad
-				H_1: \sigma^2 \neq \tfrac{1}{12}
-			\]
-			\[
-				V(r) = \frac{\sum(r_i - \bar{r})^2}{n-1} = \boxed{\ldots}
-			\]
-		\end{alertblock}
-		\column{0.48\linewidth}
-		\begin{block}{Límites Chi-Cuadrada}
-			\[
-				LI = \frac{\chi^2_{(1-\alpha/2),\,n-1}}{12(n-1)}
-			\]
-			\[
-				LS = \frac{\chi^2_{\alpha/2,\,n-1}}{12(n-1)}
-			\]
-		\end{block}
-	\end{columns}
-	\vspace{0.35cm}
-	\begin{exampleblock}{Conclusión estadística}
-		\footnotesize
-		Si $V(r) \in [LI,\,LS]$, \textbf{no se rechaza} $H_0$: la dispersión del
-		generador es estadísticamente uniforme. En caso contrario se rechaza.
-	\end{exampleblock}
-	\result{$V(r) = \ldots$ \quad $LI = \ldots$ \quad $LS = \ldots$}
+	\begin{block}{Contexto Operativo}
+		\justifying
+		Se requiere verificar la dispersión estocástica de los tiempos de llegada de los camiones de
+		extracción minera hacia el pad de lixiviación. Vital para evitar la formación de cuellos de
+		botella no reales en el software de simulación.
+	\end{block}
+	\begin{alertblock}{Marco Teórico}
+		\justifying
+		La Prueba de Medias confirmó que el generador ACL no presenta
+		sesgo en su valor promedio. Sin embargo, una media correcta no
+		garantiza una dispersión adecuada de los datos.\\[8pt]
+		La \textbf{Prueba de Varianza} verifica que la dispersión observada
+		sea compatible con la de una distribución uniforme $U(0,1)$, cuya
+		varianza teórica es: $V[X] \;=\; 1/12$.\\[8pt]
+		Si el conjunto $r_i$ proviene genuinamente de una $U(0,1)$, su
+		\textbf{varianza muestral} debe ser estadísticamente compatible con
+		este valor teórico. Una varianza $V(r) \ll 1/12$ indica concentración
+		hacia el centro, mientras que una varianza $V(r) \gg 1/12$
+		sugiere acumulación en los extremos.
+	\end{alertblock}
 \end{frame}
+
+\begin{frame}{Pregunta 5: Validación Estadística — Prueba de Varianza}
+	\begin{emptyblock}
+		\justifying
+		Mientras que la Prueba de Medias se basa en el TCL y utiliza la
+		distribución normal, la \textbf{Prueba de Varianza} emplea la
+		distribución \textbf{Chi-cuadrada}, ya que la varianza muestral se
+		construye a partir de sumas de cuadrados. Para una muestra de $n$ observaciones i.i.d.\ con varianza poblacional
+		$\sigma^2$, la cantidad:
+		\[
+			\frac{(n-1)\,V(r)}{\sigma^2} \;\sim\; \chi^2_{n-1}
+		\]
+		Bajo la hipótesis de un generador con varianza correcta ($\sigma^2 = 1/12$), los
+		\textbf{límites de aceptación} para $V(r)$ con un nivel de
+		confianza $(1-\alpha)\cdot 100\%$ se definen como:
+		\[
+			\boxed{
+			LI \;=\; \frac{\chi^2_{1-\alpha/2,\,n-1}}{12(n-1)}
+			\qquad
+			LS \;=\; \frac{\chi^2_{\alpha/2,\,n-1}}{12(n-1)}
+			}
+		\]
+		La $\chi^2$ es \textbf{asimétrica}: la cola izquierda
+		($\chi^2_{1-\alpha/2}$, cuantil bajo) define $LI$ y la cola derecha
+		($\chi^2_{\alpha/2}$, cuantil alto) define $LS$.
+		Ambos se leen de la tabla Chi-cuadrada con $df = n-1$.
+	\end{emptyblock}
+\end{frame}
+
+\begin{frame}{Pregunta 5: Validación Estadística — Prueba de Varianza}
+	\begin{exampleblock}{Formulación de Hipótesis}
+		\justifying
+		Se analizó el mismo conjunto de 100 números pseudoaleatorios de la Pregunta 4,
+		generados mediante ACL con parámetros $X_0 = 83$, $a = 141$, $c = 53$ y $m = 1024$.\\[6pt]
+		Dado que un generador válido debe producir valores cuya varianza no
+		difiera significativamente del valor teórico ($\sigma^2 = 1/12$),
+		se plantea estadísticamente un contraste de hipótesis bilateral:
+		\begin{align*}
+			H_0 & : \sigma_r^2 = 1/12
+			\quad \text{(El generador presenta la dispersión esperada)} \\[6pt]
+			H_1 & : \sigma_r^2 \neq 1/12
+			\quad \text{(La dispersión es incorrecta y el generador debe descartarse)}
+		\end{align*}
+		\begin{center}
+			\small
+			\renewcommand{\arraystretch}{1.3}
+			\setlength{\tabcolsep}{12pt}
+			\begin{tabular}{ll}
+				\toprule
+				\textbf{Condición}             & \textbf{Decisión} \\
+				\midrule
+				$LI \leq V(r) \leq LS$         & No rechazar $H_0$ \\
+				$V(r) < LI \;\lor\; V(r) > LS$ & Rechazar $H_0$    \\
+				\bottomrule
+			\end{tabular}
+		\end{center}
+	\end{exampleblock}
+\end{frame}
+
+\begin{frame}{Pregunta 5: Validación Estadística — Prueba de Varianza}
+	\begin{exampleblock}{Cálculo de la Varianza y Límites}
+		\begin{itemize}
+			\item Grados de libertad: $gl = n - 1 = 99$
+			\item Cuantiles Chi-cuadrada \textnormal{(tabla)}:
+			      \[
+				      \chi^2_{0.025,\;99} = 128.422
+				      \qquad
+				      \chi^2_{0.975,\;99} = 73.361
+			      \]
+		\end{itemize}
+		\textbf{Parámetros:} $n = 100$,\; $\alpha = 0.05$,\;
+		$z_{0.025} = 1.96$ \textnormal{(tabla Chi-Cuadrado)}\\[6pt]
+		\textbf{1.\ Varianza muestral}:\\[-6pt]
+		\[
+			V(r) \;=\;
+			\frac{\displaystyle\sum_{i=1}^{n}(r_i - \bar{r})^2}{n-1}
+			\;=\; \frac{\displaystyle\sum_{i=1}^{100}(r_i - 0.4657)^2}{99}
+			\;=\;
+			\frac{8.0160}{99}
+			\;=\; \mathbf{0.08097}
+		\]
+		\textbf{2.\ Límite inferior:}\\[-10pt]
+		\[
+			LI \;=\; \frac{\chi^2_{1-\alpha/2,\,n-1}}{12(n-1)}
+			\;=\; \frac{\chi^2_{0.975,\;99}}{12(99)}
+			\;=\; \frac{73.361}{1188}
+			\;=\; \mathbf{0.06174}
+		\]
+		\textbf{3.\ Límite superior:}\\[-10pt]
+		\[
+			LS \;=\; \frac{\chi^2_{\alpha/2,\,n-1}}{12(n-1)}
+			\;=\; \frac{\chi^2_{0.025,\;99}}{12(99)}
+			\;=\; \frac{128.422}{1188}
+			\;=\; \mathbf{0.10810}
+		\]
+		\vspace{-6pt}
+	\end{exampleblock}
+\end{frame}
+
+
+
+
+\begin{frame}{Pregunta 5: Validación Estadística — Prueba de Varianza}
+	\textbf{Promedio muestral ya calculado:} $\bar{r} = 0.4657$.\\[6pt]
+
+	\textbf{Estadístico de prueba} \textnormal{(Ref.\ Cap.\ 2.4.2)}:
+	\[
+		V(r) \;=\; \frac{\displaystyle\sum_{i=1}^{n}(r_i - \bar{r})^2}{n-1}
+	\]
+
+	Se usa $n-1$ en el denominador (corrección de Bessel) para obtener
+	un estimador \textbf{insesgado} de $\sigma^2$: dividir por $n$
+	subestimaría sistemáticamente la varianza poblacional.
+
+\end{frame}
+
+\begin{frame}{Pregunta 5: Validación Estadística — Prueba de Varianza}
+	\textbf{Parámetros de la prueba:}
+
+\end{frame}
+
+
+% ─────────────────────────────────────────────────────────────────────────────
+% SLIDE 6 — Aplicación Numérica
+% ─────────────────────────────────────────────────────────────────────────────
+\begin{frame}{Pregunta 5: Validación Estadística — Prueba de Varianza}
+
+
+
+	\vspace{0.4em}
+	\begin{block}{Verificación}
+		\[
+			LI \;\leq\; V(r) \;\leq\; LS
+			\quad\Longrightarrow\quad
+			0.06174 \;\leq\; \mathbf{0.08097} \;\leq\; 0.10810
+			\quad\checkmark
+		\]
+	\end{block}
+
+\end{frame}
+
+
+% ─────────────────────────────────────────────────────────────────────────────
+% SLIDE 7 — Conclusion
+% ─────────────────────────────────────────────────────────────────────────────
+\begin{frame}{Pregunta 5: Validación Estadística — Prueba de Varianza}
+
+	\begin{center}
+		\renewcommand{\arraystretch}{1.3}
+		\begin{tabular}{lc}
+			\toprule
+			\textbf{Elemento}               & \textbf{Valor}  \\
+			\midrule
+			Tamaño de muestra $n$           & 100             \\
+			Grados de libertad $gl = n-1$   & 99              \\
+			Nivel de significancia $\alpha$ & 0.05            \\
+			$\chi^2_{0.025,\;99}$           & 128.422         \\
+			$\chi^2_{0.975,\;99}$           & 73.361          \\
+			Varianza teórica $1/12$         & 0.08333         \\
+			Varianza muestral $V(r)$        & 0.08097         \\
+			Límite inferior $LI$            & 0.06174         \\
+			Límite superior $LS$            & 0.10810         \\
+			$V(r) \in [LI,\,LS]$?           & Sí\; \checkmark \\
+			\bottomrule
+		\end{tabular}
+	\end{center}
+
+	\vspace{0.3em}
+	\begin{alertblock}{Conclusión estadística}
+		Como $V(r) = 0.08097 \in [0.06174,\;0.10810]$,
+		\textbf{no se rechaza $H_0$} al 95\% de confianza.
+		Combinado con el resultado de la Prueba de Medias, el generador ACL
+		queda validado en sus dos propiedades fundamentales:
+		\textbf{media} $= 0.5$ y \textbf{varianza} $= 1/12$.
+	\end{alertblock}
+
+\end{frame}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 % ════════════════════════════════════════════════════════════
 \section{\textbf{Pregunta 6:} Validación Estadística — Prueba de Uniformidad}
