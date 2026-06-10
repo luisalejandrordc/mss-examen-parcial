@@ -813,58 +813,169 @@
 \begin{frame}{Pregunta 4: Validación Estadística — Prueba de Medias}
 	\begin{block}{Contexto Operativo}
 		\justifying
-		Sistema de carga y transporte de mineral en \textbf{minería subterránea}.
-		Flotilla de volquetes que ingresa de manera \textbf{estocástica} a la zona de
-		chancado (molienda) primario.
+		Antes de inyectar los números pseudoaleatorios al modelo de averías de
+		los \textit{jumbos}, la gerencia de mina exige certificar que el generador
+		es \textbf{imparcial} (no centrado hacia ningún extremo del intervalo).
 	\end{block}
-	\vspace{6pt}
+
 	\begin{alertblock}{Marco Teórico}
-		\begin{itemize}
-			\justifying\small
-			\item \textbf{Sistema:} Conjunto de elementos interrelacionados para funcionar como un todo (frontera clara).
-			\item \textbf{Entidad:} Representación de los flujos de entrada y salida (es el elemento responsable de que el estado del sistema cambie).
-			\item \textbf{Estado del Sistema:} Condición que guarda el sistema bajo estudio en un momento determinado (variables puntuales o acumuladas).
-			\item \textbf{Evento:} Un cambio en el estado actual del sistema (actuales o futuros).
-			\item \textbf{Localizaciones:} Lugares donde la entidad se detiene para ser transformada o esperar.
-			\item \textbf{Recursos:} Dispositivos necesarios para llevar a cabo una operación.
-		\end{itemize}
+		Un conjunto $r_i \sim U(0,1)$ tiene valor esperado teórico
+		$E[r] = 0.5$ (la media de la distribución uniforme continua).
+		Si el generador estuviera sesgado, los números tenderían sistemáticamente
+		hacia 0 o hacia 1, distorsionando todas las variables aleatorias derivadas
+		de ellos.\\[6pt]
+		La \textbf{Prueba de Medias} compara el promedio muestral $\bar{r}$ de los $n$ números
+		generados contra el valor teórico esperado $\mu = 0.5$, con un margen
+		de tolerancia estadística controlado por el nivel de significancia $\alpha$.
+		\begin{block}{Datos utilizados}
+			\small
+			100 números pseudoaleatorios generados mediante ACL con parámetros
+			$X_0 = 83$, $a = 141$, $c = 53$, $m = 2^{10} = 1024$
+			(cumplen condiciones de período máximo $N = 1024$).
+		\end{block}
 	\end{alertblock}
 \end{frame}
 
 \begin{frame}{Pregunta 4: Validación Estadística — Prueba de Medias}
-	\begin{columns}[T]
-		\column{0.48\linewidth}
-		\begin{alertblock}{Hipótesis}
-			\[
-				H_0: \mu = 0.5 \quad \text{vs} \quad H_1: \mu \neq 0.5
-			\]
-			\[
-				\bar{r} = \frac{1}{n}\sum_{i=1}^{n} r_i
-			\]
-		\end{alertblock}
-		\vspace{0.3cm}
-		\begin{block}{Promedio Muestral}
-			\[
-				\bar{r} = \frac{\ldots}{\ldots} = \boxed{\ldots}
-			\]
-		\end{block}
-		\column{0.48\linewidth}
-		\begin{block}{Límites de Aceptación}
-			\[
-				LI = 0.5 - Z_{\alpha/2}\,\frac{1}{\sqrt{12n}}
-			\]
-			\[
-				LS = 0.5 + Z_{\alpha/2}\,\frac{1}{\sqrt{12n}}
-			\]
-			Con $Z_{\alpha/2} = \ldots$ (tabla normal estándar).
-		\end{block}
-		\vspace{0.2cm}
-		\begin{exampleblock}{Conclusión}
-			\footnotesize
-			Como $\bar{r} \in [LI,\,LS]$, \textbf{no se rechaza} $H_0$:\\
-			el generador es imparcial.
-		\end{exampleblock}
-	\end{columns}
+
+	\begin{block}{Formulación de Hipótesis}
+		\[
+			H_0: \mu_r = 0.5 \qquad \text{vs} \qquad H_1: \mu_r \neq 0.5
+		\]
+	\end{block}
+
+	\vspace{0.4em}
+	\textbf{¿Por qué $\mu = 0.5$?}
+	La distribución $U(0,1)$ tiene densidad constante $f(x)=1$ en $(0,1)$.
+	Su media teórica es $E[X] = \int_0^1 x\,dx = \tfrac{1}{2} = 0.5$.
+	Verificar $H_0$ es verificar que los $r_i$ se comportan como si fueran
+	uniformes.
+
+	\vspace{0.4em}
+	\textbf{Estadístico de prueba:}
+	\[
+		\bar{r} \;=\; \frac{1}{n}\sum_{i=1}^{n} r_i
+	\]
+
+	Por el \textbf{Teorema Central del Límite}, para $n$ grande,
+	$\bar{r} \approx \mathcal{N}\!\left(0.5,\;\frac{\sigma^2}{n}\right)$
+	con $\sigma^2 = \frac{1}{12}$ (varianza de $U(0,1)$).
+	Esto justifica el uso de la distribución normal estándar para construir
+	el intervalo de aceptación.
+
+\end{frame}
+
+\begin{frame}{Límites de Aceptación — ¿Por qué esa fórmula?}
+
+	Por el TCL, la distribución muestral de $\bar{r}$ es:
+	\[
+		\bar{r} \;\sim\; \mathcal{N}\!\left(\mu,\; \frac{\sigma^2}{n}\right)
+		\;=\; \mathcal{N}\!\left(0.5,\; \frac{1/12}{n}\right)
+		\;=\; \mathcal{N}\!\left(0.5,\; \frac{1}{12n}\right)
+	\]
+
+	Un intervalo de confianza bilateral al $(1-\alpha)\times100\%$ para $\mu$:
+	\[
+		P\!\left(\mu - z_{\alpha/2}\frac{\sigma}{\sqrt{n}}
+		\;\leq\; \bar{r}
+		\;\leq\; \mu + z_{\alpha/2}\frac{\sigma}{\sqrt{n}}\right)
+		= 1 - \alpha
+	\]
+
+	Sustituyendo $\mu = 0.5$ y $\sigma = \sqrt{1/12}$:
+
+	\[
+		\boxed{
+			LI \;=\; 0.5 - z_{\alpha/2}\,\frac{1}{\sqrt{12n}}
+			\qquad
+			LS \;=\; 0.5 + z_{\alpha/2}\,\frac{1}{\sqrt{12n}}
+		}
+	\]
+
+	\vspace{0.3em}
+	\begin{block}{Interpretación del factor $1/\sqrt{12n}$}
+		\small
+		Es el \textbf{error estándar} de $\bar{r}$: combina la dispersión
+		intrínseca de $U(0,1)$ — capturada en $\sigma = 1/\sqrt{12}$ — con la
+		reducción de incertidumbre al promediar $n$ observaciones
+		(factor $1/\sqrt{n}$). A mayor $n$, el intervalo se estrecha
+		y la prueba es más exigente.
+	\end{block}
+
+\end{frame}
+
+\begin{frame}{Aplicación Numérica}
+
+	\textbf{Parámetros:} $n = 100$, \;$\alpha = 0.05$, \;$z_{0.025} = 1.96$
+
+	\vspace{0.5em}
+	\textbf{1. Promedio muestral:}
+	\[
+		\bar{r} \;=\; \frac{1}{100}\sum_{i=1}^{100} r_i
+		\;=\; \frac{46.5748}{100} \;=\; \mathbf{0.4657}
+	\]
+
+	\vspace{0.4em}
+	\textbf{2. Límite inferior:}
+	\[
+		LI \;=\; 0.5 - 1.96\cdot\frac{1}{\sqrt{12 \times 100}}
+		\;=\; 0.5 - 1.96\cdot 0.028868
+		\;=\; \mathbf{0.4434}
+	\]
+
+	\vspace{0.4em}
+	\textbf{3. Límite superior:}
+	\[
+		LS \;=\; 0.5 + 1.96\cdot\frac{1}{\sqrt{12 \times 100}}
+		\;=\; 0.5 + 1.96\cdot 0.028868
+		\;=\; \mathbf{0.5566}
+	\]
+
+	\vspace{0.5em}
+	\begin{block}{Verificación}
+		\[
+			LI \;\leq\; \bar{r} \;\leq\; LS
+			\quad\Longrightarrow\quad
+			0.4434 \;\leq\; 0.4657 \;\leq\; 0.5566 \quad \checkmark
+		\]
+	\end{block}
+
+\end{frame}
+
+\begin{frame}{Conclusión — Prueba de Medias}
+
+	\begin{center}
+		\renewcommand{\arraystretch}{1.3}
+		\begin{tabular}{lc}
+			\toprule
+			\textbf{Elemento}               & \textbf{Valor} \\
+			\midrule
+			Tamaño de muestra $n$           & 100            \\
+			Nivel de significancia $\alpha$ & 0.05           \\
+			$z_{\alpha/2} = z_{0.025}$      & 1.96           \\
+			Promedio muestral $\bar{r}$     & 0.4657         \\
+			Límite inferior $LI$            & 0.4434         \\
+			Límite superior $LS$            & 0.5566         \\
+			$\bar{r} \in [LI,\,LS]$?        & Sí \checkmark  \\
+			\bottomrule
+		\end{tabular}
+	\end{center}
+
+	\vspace{0.5em}
+	\begin{alertblock}{Conclusión estadística}
+		Como $\bar{r} = 0.4657$ se encuentra dentro del intervalo de aceptación
+		$[0.4434,\;0.5566]$, \textbf{no se rechaza $H_0$} con un nivel de
+		confianza del 95\%.
+		Se concluye que el conjunto de 100 números pseudoaleatorios
+		\textbf{tiene un valor esperado estadísticamente compatible con 0.5},
+		validando la imparcialidad del generador ACL utilizado.
+	\end{alertblock}
+
+	\vspace{0.3em}
+	\small\textit{Nota:} Al recibir los datos del profesor, reemplazar
+	$\bar{r}$, $n$ y $\alpha$; la estructura del argumento y las fórmulas
+	son idénticas.
+
 \end{frame}
 
 % ════════════════════════════════════════════════════════════
