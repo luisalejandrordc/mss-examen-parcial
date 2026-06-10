@@ -1109,11 +1109,11 @@
 \begin{frame}{Pregunta 5: Validación Estadística — Prueba de Varianza}
 	\begin{exampleblock}{Conclusión Estadística}
 		\justifying
-		Como $\bar{r} = 0.4657 \in [0.4434,\;0.5566]$,
+		Como $V(r) = 0.08097 \in [0.06174,\;0.10810]$,
 		\textbf{no se rechaza $H_0$} al 95\% de confianza.
-		El conjunto de 100 números pseudoaleatorios tiene un valor esperado
-		estadísticamente compatible con $0.5$, validando la
-		\textbf{imparcialidad} del generador ACL utilizado.
+		Combinado con el resultado de la Prueba de Medias, el generador ACL
+		queda validado en sus dos propiedades fundamentales:
+		\textbf{media} $= 0.5$ y \textbf{varianza} $= 1/12$.
 		\[
 			LI \;\leq\; V(r) \;\leq\; LS
 			\quad\Longrightarrow\quad
@@ -1122,67 +1122,6 @@
 		\]
 	\end{exampleblock}
 \end{frame}
-
-
-
-
-
-
-
-
-% ─────────────────────────────────────────────────────────────────────────────
-% SLIDE 7 — Conclusion
-% ─────────────────────────────────────────────────────────────────────────────
-\begin{frame}{Pregunta 5: Validación Estadística — Prueba de Varianza}
-
-	\begin{center}
-		\renewcommand{\arraystretch}{1.3}
-		\begin{tabular}{lc}
-			\toprule
-			\textbf{Elemento}               & \textbf{Valor}  \\
-			\midrule
-			Tamaño de muestra $n$           & 100             \\
-			Grados de libertad $gl = n-1$   & 99              \\
-			Nivel de significancia $\alpha$ & 0.05            \\
-			$\chi^2_{0.025,\;99}$           & 128.422         \\
-			$\chi^2_{0.975,\;99}$           & 73.361          \\
-			Varianza teórica $1/12$         & 0.08333         \\
-			Varianza muestral $V(r)$        & 0.08097         \\
-			Límite inferior $LI$            & 0.06174         \\
-			Límite superior $LS$            & 0.10810         \\
-			$V(r) \in [LI,\,LS]$?           & Sí\; \checkmark \\
-			\bottomrule
-		\end{tabular}
-	\end{center}
-
-	\vspace{0.3em}
-	\begin{alertblock}{Conclusión estadística}
-		Como $V(r) = 0.08097 \in [0.06174,\;0.10810]$,
-		\textbf{no se rechaza $H_0$} al 95\% de confianza.
-		Combinado con el resultado de la Prueba de Medias, el generador ACL
-		queda validado en sus dos propiedades fundamentales:
-		\textbf{media} $= 0.5$ y \textbf{varianza} $= 1/12$.
-	\end{alertblock}
-
-\end{frame}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 % ════════════════════════════════════════════════════════════
 \section{\textbf{Pregunta 6:} Validación Estadística — Prueba de Uniformidad}
