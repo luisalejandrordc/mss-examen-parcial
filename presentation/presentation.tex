@@ -1068,17 +1068,8 @@
 
 \begin{frame}{Pregunta 5: Validación Estadística — Prueba de Varianza}
 	\begin{exampleblock}{Cálculo de la Varianza y Límites}
-		\begin{itemize}
-			\item Grados de libertad: $gl = n - 1 = 99$
-			\item Cuantiles Chi-cuadrada \textnormal{(tabla)}:
-			      \[
-				      \chi^2_{0.025,\;99} = 128.422
-				      \qquad
-				      \chi^2_{0.975,\;99} = 73.361
-			      \]
-		\end{itemize}
-		\textbf{Parámetros:} $n = 100$,\; $\alpha = 0.05$,\;
-		$z_{0.025} = 1.96$ \textnormal{(tabla Chi-Cuadrado)}\\[6pt]
+		\textbf{Parámetros:} $n = 100$,\; $df = 99$,\; $\alpha = 0.05$,\;
+		$\chi^2_{0.025,\;99} = 128.422$,\; $\chi^2_{0.975,\;99} = 73.361$ \\[6pt]
 		\textbf{1.\ Varianza muestral}:\\[-6pt]
 		\[
 			V(r) \;=\;
@@ -1088,6 +1079,7 @@
 			\frac{8.0160}{99}
 			\;=\; \mathbf{0.08097}
 		\]
+		\vspace{6pt}
 		\textbf{2.\ Límite inferior:}\\[-10pt]
 		\[
 			LI \;=\; \frac{\chi^2_{1-\alpha/2,\,n-1}}{12(n-1)}
@@ -1095,6 +1087,7 @@
 			\;=\; \frac{73.361}{1188}
 			\;=\; \mathbf{0.06174}
 		\]
+		\vspace{6pt}
 		\textbf{3.\ Límite superior:}\\[-10pt]
 		\[
 			LS \;=\; \frac{\chi^2_{\alpha/2,\,n-1}}{12(n-1)}
@@ -1106,47 +1099,35 @@
 	\end{exampleblock}
 \end{frame}
 
-
-
-
 \begin{frame}{Pregunta 5: Validación Estadística — Prueba de Varianza}
-	\textbf{Promedio muestral ya calculado:} $\bar{r} = 0.4657$.\\[6pt]
-
-	\textbf{Estadístico de prueba} \textnormal{(Ref.\ Cap.\ 2.4.2)}:
-	\[
-		V(r) \;=\; \frac{\displaystyle\sum_{i=1}^{n}(r_i - \bar{r})^2}{n-1}
-	\]
-
-	Se usa $n-1$ en el denominador (corrección de Bessel) para obtener
-	un estimador \textbf{insesgado} de $\sigma^2$: dividir por $n$
-	subestimaría sistemáticamente la varianza poblacional.
-
+	\begin{emptyblock}
+		\centering
+		\includegraphics[width=0.9\linewidth]{mean-test.png}
+	\end{emptyblock}
 \end{frame}
 
 \begin{frame}{Pregunta 5: Validación Estadística — Prueba de Varianza}
-	\textbf{Parámetros de la prueba:}
-
-\end{frame}
-
-
-% ─────────────────────────────────────────────────────────────────────────────
-% SLIDE 6 — Aplicación Numérica
-% ─────────────────────────────────────────────────────────────────────────────
-\begin{frame}{Pregunta 5: Validación Estadística — Prueba de Varianza}
-
-
-
-	\vspace{0.4em}
-	\begin{block}{Verificación}
+	\begin{exampleblock}{Conclusión Estadística}
+		\justifying
+		Como $\bar{r} = 0.4657 \in [0.4434,\;0.5566]$,
+		\textbf{no se rechaza $H_0$} al 95\% de confianza.
+		El conjunto de 100 números pseudoaleatorios tiene un valor esperado
+		estadísticamente compatible con $0.5$, validando la
+		\textbf{imparcialidad} del generador ACL utilizado.
 		\[
 			LI \;\leq\; V(r) \;\leq\; LS
 			\quad\Longrightarrow\quad
 			0.06174 \;\leq\; \mathbf{0.08097} \;\leq\; 0.10810
 			\quad\checkmark
 		\]
-	\end{block}
-
+	\end{exampleblock}
 \end{frame}
+
+
+
+
+
+
 
 
 % ─────────────────────────────────────────────────────────────────────────────
