@@ -707,6 +707,7 @@
 
 \begin{frame}{Pregunta 3: Generación de Variables Aleatorias (ACL)}
 	\begin{exampleblock}{Selección de Parámetros}
+		\justifying
 		El generador produce una secuencia $S = \{0,1,\ldots,m{-}1\}$ que
 		inevitablemente se repite. La longitud antes de la repetición se denomina
 		\textbf{período de vida} $N$, con $N \leq m$.
@@ -740,6 +741,7 @@
 
 \begin{frame}{Pregunta 3: Generación de Variables Aleatorias (ACL)}
 	\begin{exampleblock}{Desarrollo Iterativo}
+		\justifying
 		Se presenta el proceso de generación de los \textbf{primeros cinco} números
 		pseudoaleatorios utilizando el método ACL con los parámetros seleccionados.\\[6pt]
 		Aplicando $X_{i+1} = (37 \cdot X_i + 19)\;\mathrm{mod}(128)$
@@ -815,94 +817,113 @@
 		\justifying
 		Antes de inyectar los números pseudoaleatorios al modelo de averías de
 		los \textit{jumbos}, la gerencia de mina exige certificar que el generador
-		es \textbf{imparcial} (no centrado hacia ningún extremo del intervalo).
+		es \textbf{imparcial} (centrado en el intervalo).
 	\end{block}
-
 	\begin{alertblock}{Marco Teórico}
-		Un conjunto $r_i \sim U(0,1)$ tiene valor esperado teórico
-		$E[r] = 0.5$ (la media de la distribución uniforme continua).
-		Si el generador estuviera sesgado, los números tenderían sistemáticamente
-		hacia 0 o hacia 1, distorsionando todas las variables aleatorias derivadas
-		de ellos.\\[6pt]
-		La \textbf{Prueba de Medias} compara el promedio muestral $\bar{r}$ de los $n$ números
-		generados contra el valor teórico esperado $\mu = 0.5$, con un margen
-		de tolerancia estadística controlado por el nivel de significancia $\alpha$.
-		\begin{block}{Datos utilizados}
-			\small
-			100 números pseudoaleatorios generados mediante ACL con parámetros
-			$X_0 = 83$, $a = 141$, $c = 53$, $m = 2^{10} = 1024$
-			(cumplen condiciones de período máximo $N = 1024$).
-		\end{block}
+		\justifying
+		Los números pseudoaleatorios $r_i$ deben comportarse como realizaciones
+		de una distribución \textbf{uniforme continua} $U(0,1)$, cuya función
+		de densidad es $f(x) = 1/(b-a) = 1 \; , \; x \in [0, 1]$.\\[6pt]
+		El \textbf{valor esperado} se obtiene integrando $x\,f(x)$ en todo el
+		soporte:
+		\[
+			E[X] \;=\; \int_0^1 x \cdot 1\; dx
+			\;=\; \left.\frac{x^2}{2}\right|_0^1
+			\;=\; \frac{1}{2}
+			\;=\; 0.5
+			\;=\; \mu
+		\]
+		Todo generador válido debe producir un conjunto $r_i$ cuyo promedio
+		muestral sea \textbf{estadísticamente compatible} con este valor.
+		Si $\bar{r} \gg 0.5$ o $\bar{r} \ll 0.5$, el generador tiene sesgo
+		y debe descartarse.
 	\end{alertblock}
 \end{frame}
 
 \begin{frame}{Pregunta 4: Validación Estadística — Prueba de Medias}
-
-	\begin{block}{Formulación de Hipótesis}
+	\begin{emptyblock}
+		\justifying
+		La \textbf{varianza} de $U(0,1)$ se obtiene a partir de
+		$V[X] = E[X^2] - \mu^2$:
 		\[
-			H_0: \mu_r = 0.5 \qquad \text{vs} \qquad H_1: \mu_r \neq 0.5
+			E[X^2] \;=\; \int_0^1 x^2 \cdot 1\; dx
+			\;=\; \left.\frac{x^3}{3}\right|_0^1
+			\;=\; \frac{1}{3}
 		\]
-	\end{block}
-
-	\vspace{0.4em}
-	\textbf{¿Por qué $\mu = 0.5$?}
-	La distribución $U(0,1)$ tiene densidad constante $f(x)=1$ en $(0,1)$.
-	Su media teórica es $E[X] = \int_0^1 x\,dx = \tfrac{1}{2} = 0.5$.
-	Verificar $H_0$ es verificar que los $r_i$ se comportan como si fueran
-	uniformes.
-
-	\vspace{0.4em}
-	\textbf{Estadístico de prueba:}
-	\[
-		\bar{r} \;=\; \frac{1}{n}\sum_{i=1}^{n} r_i
-	\]
-
-	Por el \textbf{Teorema Central del Límite}, para $n$ grande,
-	$\bar{r} \approx \mathcal{N}\!\left(0.5,\;\frac{\sigma^2}{n}\right)$
-	con $\sigma^2 = \frac{1}{12}$ (varianza de $U(0,1)$).
-	Esto justifica el uso de la distribución normal estándar para construir
-	el intervalo de aceptación.
-
+		\[
+			V[X] \;=\; E[X^2] - \mu^2
+			\;=\; \frac{1}{3} - \left(\frac{1}{2}\right)^{\!2}
+			\;=\; \frac{1}{3} - \frac{1}{4}
+			\;=\; \frac{1}{12}
+		\]
+		\[
+			\boxed{
+				\sigma^2 \;=\; V[X] \;=\; \frac{1}{12}
+				\qquad\Longrightarrow\qquad
+				\sigma \;=\; \frac{1}{\sqrt{12}}
+			}
+			\vspace{6pt}
+		\]
+		Este resultado es \textbf{clave} para construir los límites de aceptación:
+		la dispersión natural de los números uniformes, cuantificada por
+		$\sigma = 1/\sqrt{12}$, determina cuánto puede alejarse $\bar{r}$
+		de $0.5$ por puro azar antes de considerarse evidencia de sesgo.
+	\end{emptyblock}
 \end{frame}
 
-\begin{frame}{Límites de Aceptación — ¿Por qué esa fórmula?}
-
-	Por el TCL, la distribución muestral de $\bar{r}$ es:
-	\[
-		\bar{r} \;\sim\; \mathcal{N}\!\left(\mu,\; \frac{\sigma^2}{n}\right)
-		\;=\; \mathcal{N}\!\left(0.5,\; \frac{1/12}{n}\right)
-		\;=\; \mathcal{N}\!\left(0.5,\; \frac{1}{12n}\right)
-	\]
-
-	Un intervalo de confianza bilateral al $(1-\alpha)\times100\%$ para $\mu$:
-	\[
-		P\!\left(\mu - z_{\alpha/2}\frac{\sigma}{\sqrt{n}}
-		\;\leq\; \bar{r}
-		\;\leq\; \mu + z_{\alpha/2}\frac{\sigma}{\sqrt{n}}\right)
-		= 1 - \alpha
-	\]
-
-	Sustituyendo $\mu = 0.5$ y $\sigma = \sqrt{1/12}$:
-
-	\[
-		\boxed{
-			LI \;=\; 0.5 - z_{\alpha/2}\,\frac{1}{\sqrt{12n}}
-			\qquad
-			LS \;=\; 0.5 + z_{\alpha/2}\,\frac{1}{\sqrt{12n}}
-		}
-	\]
-
-	\vspace{0.3em}
-	\begin{block}{Interpretación del factor $1/\sqrt{12n}$}
-		\small
-		Es el \textbf{error estándar} de $\bar{r}$: combina la dispersión
-		intrínseca de $U(0,1)$ — capturada en $\sigma = 1/\sqrt{12}$ — con la
-		reducción de incertidumbre al promediar $n$ observaciones
-		(factor $1/\sqrt{n}$). A mayor $n$, el intervalo se estrecha
-		y la prueba es más exigente.
-	\end{block}
-
+\begin{frame}{Pregunta 4: Validación Estadística — Prueba de Medias}
+	\begin{emptyblock}
+		\justifying
+		Por el \textbf{Teorema Central del Límite}, el promedio muestral
+		$\bar{r}$ de $n$ observaciones i.i.d.\ converge en distribución a:
+		\[
+			\bar{r} \;\xrightarrow{d}\; \mathcal{N}\!\left(\mu,\;\frac{\sigma^2}{n}\right)
+			\;=\; \mathcal{N}\!\left(0.5,\;\frac{1}{12n}\right)
+		\]
+		% Un intervalo de confianza bilateral al $(1-\alpha)\times 100\%$
+		% para $\mu$ toma la forma $\bar{r} \pm z_{\alpha/2}\,\sigma/\sqrt{n}$.
+		% Sustituyendo $\mu = 0.5$ y $\sigma = 1/\sqrt{12}$:
+		Bajo la hipótesis de un generador imparcial ($\mu = 0.5$), los \textbf{límites de aceptación} para $\bar{r}$ con un nivel de confianza $(1-\alpha)\cdot 100\%$ se definen como:
+		\[
+			\boxed{
+				LI \;=\; 0.5 - z_{\alpha/2}\,\dfrac{1}{\sqrt{12n}}
+				\qquad
+				LS \;=\; 0.5 + z_{\alpha/2}\,\dfrac{1}{\sqrt{12n}}
+			}
+		\]
+		La \textbf{Prueba de Medias} verifica que el promedio muestral
+		$\bar{r}$ de los $n$ valores generados sea compatible con
+		el valor teórico esperado $\mu=0.5$. Si se cumple que $LI \le \bar{r} \le LS$, no existe
+		evidencia estadística suficiente para rechazar que el generador posee
+		media $0.5$. En caso contrario, se concluye que el generador presenta
+		indicios de sesgo y debe ser descartado.
+	\end{emptyblock}
 \end{frame}
+
+\begin{frame}{Pregunta 4: Validación Estadística — Prueba de Medias}
+	\begin{exampleblock}{Formulación de Hipótesis}
+		\justifying
+		Se analizan $n = 100$ números pseudoaleatorios obtenidos mediante un
+		Algoritmo Congruencial Lineal (ACL) con parámetros $X_0 = 83$,
+		$a = 141$, $c = 53$ y $m = 1024$ (período máximo).\\[6pt]
+		Dado que un generador válido debe producir valores cuyo promedio no
+		difiera significativamente del valor teórico ($\mu = 0.5$),
+		se plantea estadísticamente un contraste de hipótesis bilateral:
+		\begin{align*}
+			H_0 & : \mu_r = 0.5 \quad \text{(El generador no presenta sesgo)}                  \\[6pt]
+			H_1 & : \mu_r \neq 0.5 \quad \text{(El generador está sesgado y debe descartarse)}
+		\end{align*}
+	\end{exampleblock}
+\end{frame}
+
+
+
+
+
+
+
+
+
 
 \begin{frame}{Aplicación Numérica}
 
