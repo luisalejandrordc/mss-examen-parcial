@@ -24,9 +24,11 @@ COLORS = {
     "green": "#98c379",
     "red": "#e06c75",
     "orange": "#e5c07b",
+    "purple": "#c678dd",
+    "teal": "#56b6c2",
     "peach": "#ffc9b9",
     "rose": "#f49cbb",
-    "purple": "#ca84ff",
+    "white": "#ffffff",
 }
 
 # Set global matplotlib parameters for consistency
