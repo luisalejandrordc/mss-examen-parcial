@@ -22,18 +22,18 @@ import numpy as np
 
 
 def linear_congruential_generator(
-    seed: int, a: int, c: int, m: int, N: Optional[int] = None
+    seed: int, a: int, c: int, m: int, N: Optional[int] = None, precision: int = 4
 ) -> np.ndarray:
     if N is None:
         N = m
     x_i = seed
     seen = set()
-    results = np.empty(m)
+    sequence = np.empty(m)
     n = 0
     while x_i not in seen and n < N:
         seen.add(x_i)
         x_i = (a * x_i + c) % m
-        r_i = round(x_i / (m - 1), 4)
-        results[n] = r_i
+        r_i = round(x_i / (m - 1), precision)
+        sequence[n] = r_i
         n += 1
-    return results[:n]
+    return sequence[:n]
