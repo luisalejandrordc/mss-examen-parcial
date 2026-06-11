@@ -1141,9 +1141,9 @@
 		Las Pruebas de Medias y Varianza certificaron que el generador ACL produce valores
 		con el \textit{nivel central} y la \textit{dispersión} correctos. Sin embargo,
 		estas propiedades no garantizan una distribución uniforme en todo $(0,1)$, ya que
-		los valores podrían concentrarse en determinados subintervalos. La
-		\textbf{Prueba Chi-Cuadrada} evalúa precisamente esta uniformidad.\\[6pt]
-		Para ello, el intervalo $(0,1)$ se divide en $m$ subintervalos de igual amplitud.
+		los valores podrían concentrarse en determinados subintervalos.\\[6pt]
+		Para verificar esta propiedad, se emplea la \textbf{Prueba Chi-Cuadrada}.
+		El intervalo $(0,1)$ se divide en $m$ subintervalos de igual amplitud.
 		Luego, se compara la cantidad de observaciones que caen en cada subintervalo
 		(\textbf{frecuencia observada} $O_i$) con la cantidad que se esperaría si los
 		datos provinieran de una distribución uniforme
@@ -1151,86 +1151,63 @@
 	\end{alertblock}
 \end{frame}
 
-
-
-
-
-% ─────────────────────────────────────────────────────────────────────────────
-% SLIDE 2 — Marco Teórico I: Idea of Uniformity and Subintervals
-% ─────────────────────────────────────────────────────────────────────────────
-\begin{frame}{Marco Teórico I — ¿Qué significa que $r_i \sim U(0,1)$?}
+\begin{frame}{Pregunta 6: Validación Estadística — Prueba de Uniformidad}
 	\begin{emptyblock}
-		Número de sub-intervalos recomendado
-		\[
-			m \;=\; \sqrt{n}
-		\]
+		\justifying
+		Número de sub-intervalos recomendado: $m \;=\; \sqrt{n}$\\[6pt]
 		Este valor balancea dos riesgos opuestos: con $m$ muy pequeño se
 		pierde resolución (intervalos demasiado anchos no detectan
 		concentraciones locales); con $m$ muy grande, $E_i = n/m$ se vuelve
 		tan pequeño que la aproximación Chi-cuadrada pierde validez
-		(se requiere $E_i \geq 5$).
+		(se requiere $E_i \geq 5$).\\[6pt]
+		Bajo la hipótesis de un generador uniforme, la probabilidad de que
+		un $r_i$ caiga en cualquier sub-intervalo de longitud $1/m$ es
+		exactamente $1/m$. Por lo tanto, en una muestra de $n$ observaciones:
+		\[
+			E_i \;=\; n \cdot \frac{1}{m} \;=\; \frac{n}{m}
+			\qquad \forall\; i = 1,\ldots,m
+		\]
+
+		La discrepancia global entre lo observado y lo esperado se cuantifica
+		con el \textbf{estadístico Chi-cuadrada de Pearson}:
+		\[
+			\chi^2_0 \;=\; \sum_{i=1}^{m} \frac{(E_i - O_i)^2}{E_i}
+		\]
 	\end{emptyblock}
 \end{frame}
 
-
-\begin{block}{Datos utilizados}
-	\small
-	El mismo conjunto de 100 números pseudoaleatorios de las Preguntas 4 y 5:\\
-	ACL con $X_0 = 83,\; a = 141,\; c = 53,\; m = 2^{10} = 1024$.
-\end{block}
-
-% ─────────────────────────────────────────────────────────────────────────────
-% SLIDE 3 — Marco Teórico II: Expected Frequency and Test Statistic
-% ─────────────────────────────────────────────────────────────────────────────
-\begin{frame}{Marco Teórico II — Frecuencia Esperada y Estadístico}
-
-	Bajo $H_0$, la probabilidad de que un $r_i$ caiga en cualquier
-	sub-intervalo de longitud $1/m$ es exactamente $1/m$.
-	Por lo tanto, en una muestra de $n$ observaciones:
-	\[
-		E_i \;=\; n \cdot \frac{1}{m} \;=\; \frac{n}{m}
-		\qquad \forall\; i = 1,\ldots,m
-	\]
-
-	La discrepancia global entre lo observado y lo esperado se cuantifica
-	con el \textbf{estadístico Chi-cuadrada de Pearson}:
-	\[
-		\chi^2_0 \;=\; \sum_{i=1}^{m} \frac{(E_i - O_i)^2}{E_i}
-	\]
-
-	\begin{block}{¿Por qué esta forma?}
-		\small
-		Cada término $(E_i - O_i)^2 / E_i$ mide el \textit{error relativo}
-		al cuadrado en el intervalo $i$: se divide por $E_i$ para que
-		desviaciones en intervalos con pocas observaciones esperadas no
-		dominen artificialmente la suma. Bajo $H_0$, la suma total sigue
-		asintóticamente una distribución $\chi^2$ con $m-1$ grados de
-		libertad (se pierde 1 gl por la restricción $\sum O_i = n$).
-	\end{block}
-
+\begin{frame}{Pregunta 6: Validación Estadística — Prueba de Uniformidad}
+	\begin{exampleblock}{Formulación de Hipótesis}
+		\justifying
+		Se analizó el mismo conjunto de 100 números pseudoaleatorios de las preguntas anteriores,
+		generados mediante ACL con parámetros $X_0 = 83$, $a = 141$, $c = 53$ y $m = 1024$.\\[6pt]
+		Dado que un generador válido debe producir valores distribuidos
+		uniformemente en el intervalo $(0,1)$, se plantea estadísticamente
+		el siguiente contraste de hipótesis:
+		\begin{align*}
+			H_0 & : \text{Los números generados siguen una distribución } U(0,1)    \\[6pt]
+			H_1 & : \text{Los números generados no siguen una distribución } U(0,1)
+		\end{align*}
+		\begin{center}
+			\small
+			\renewcommand{\arraystretch}{1.3}
+			\setlength{\tabcolsep}{12pt}
+			\begin{tabular}{ll}
+				\toprule
+				\textbf{Condición}                  & \textbf{Decisión} \\
+				\midrule
+				$\chi_0^2 \leq \chi^2_{\alpha,m-1}$ & No rechazar $H_0$ \\
+				$\chi_0^2 > \chi^2_{\alpha,m-1}$    & Rechazar $H_0$    \\
+				\bottomrule
+			\end{tabular}
+		\end{center}
+	\end{exampleblock}
 \end{frame}
-
 
 % ─────────────────────────────────────────────────────────────────────────────
 % SLIDE 4 — Marco Teórico III: Decision Rule
 % ─────────────────────────────────────────────────────────────────────────────
 \begin{frame}{Marco Teórico III — Regla de Decisión}
-
-	\begin{block}{Hipótesis \textnormal{(Ref.\ Cap.\ 2.4.3.1)}}
-		\[
-			H_0: r_i \sim U(0,1)
-			\qquad\text{vs}\qquad
-			H_1: r_i \text{ no son uniformes}
-		\]
-	\end{block}
-
-	\vspace{0.4em}
-	\textbf{Regla de decisión} (prueba \textbf{unilateral derecha}):
-	\[
-		\text{No rechazar } H_0 \;\;\text{si}\;\;
-		\chi^2_0 \;<\; \chi^2_{\alpha,\;m-1}
-	\]
-
 	\begin{block}{¿Por qué unilateral y no bilateral?}
 		\small
 		Un $\chi^2_0$ muy \textit{pequeño} no es problemático — simplemente
