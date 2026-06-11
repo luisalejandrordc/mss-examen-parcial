@@ -67,7 +67,17 @@ def main():
         label="Sample Mean",
     )
 
-    # 3. Plot the Confidence Limits
+    # 3. Plot the Theoretical Mean
+    theoretical_mean = 0.5
+    ax.axhline(
+        theoretical_mean,
+        color=COLORS["m4"],
+        lw=2.0,
+        linestyle=":",
+        label="Theoretical Mean",
+    )
+
+    # 4. Plot the Confidence Limits
     ax.axhline(
         lower_limit, color=COLORS["m1"], lw=1.5, linestyle="--", label="95% Lower Limit"
     )
@@ -75,7 +85,7 @@ def main():
         upper_limit, color=COLORS["m1"], lw=1.5, linestyle="--", label="95% Upper Limit"
     )
 
-    # 4. Shade the acceptable region
+    # 5. Shade the acceptable region
     ax.fill_between(
         range(n),
         lower_limit,
