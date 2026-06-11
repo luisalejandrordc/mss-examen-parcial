@@ -24,6 +24,9 @@ COLORS = {
     "green": "#98c379",
     "red": "#e06c75",
     "orange": "#e5c07b",
+    "peach": "#ffc9b9",
+    "rose": "#f49cbb",
+    "purple": "#ca84ff",
 }
 
 # Set global matplotlib parameters for consistency
@@ -75,9 +78,11 @@ def main():
     contribs = (expected - observed) ** 2 / expected
     chi2_0 = contribs.sum()
 
+    # From Binomial Distribution Var(Oi) = np(1 - p) = E(1 - 1/m)
+    std_dev = math.sqrt(expected * (1 - 1 / m_int))
+
     # ── 3. Plotting Setup ─────────────────────────────────────────────────────
-    fig, axes = plt.subplots(1, 2, figsize=(14, 5))
-    fig.patch.set_facecolor(COLORS["bg"])
+    fig, axes = plt.subplots(1, 2, figsize=(14, 6))
     fig.suptitle(
         "Statistical Validation: Uniformity Test (95% Confidence Level)",
         color=COLORS["gold"],
@@ -94,7 +99,12 @@ def main():
 
     # Highlight bars that deviate heavily from the expected value
     bar_colors = [
-        COLORS["red"] if abs(o - expected) > 3 else COLORS["blue"] for o in observed
+        (
+            COLORS["blue"]
+            if expected - std_dev <= o <= expected + std_dev
+            else COLORS["red"]
+        )
+        for o in observed
     ]
 
     bars1 = ax1.bar(
@@ -106,38 +116,6 @@ def main():
         edgecolor=COLORS["panel"],
         linewidth=0.6,
         zorder=3,
-        label="Observed ($O_i$)",
-    )
-
-    # Expected frequency line
-    ax1.axhline(
-        expected,
-        color=COLORS["green"],
-        lw=2,
-        linestyle="--",
-        zorder=4,
-        label=f"Expected ($E_i = {expected:.0f}$)",
-    )
-
-    # Tolerance band ±1 std under Poisson approximation (sqrt(E))
-    std_dev = math.sqrt(expected)
-    ax1.axhline(
-        expected + std_dev,
-        color=COLORS["green"],
-        lw=1,
-        linestyle=":",
-        alpha=0.7,
-        label="Tolerance ($E_i \\pm \\sqrt{E_i}$)",
-    )
-    ax1.axhline(
-        expected - std_dev, color=COLORS["green"], lw=1, linestyle=":", alpha=0.7
-    )
-    ax1.fill_between(
-        [0, 1],
-        expected - std_dev,
-        expected + std_dev,
-        color=COLORS["green"],
-        alpha=0.08,
     )
 
     # Annotate each bar with its observed value
@@ -152,12 +130,46 @@ def main():
             color=COLORS["text"],
         )
 
+    # Expected frequency line
+    expected_handle = ax1.axhline(
+        expected,
+        color=COLORS["green"],
+        lw=2,
+        linestyle="--",
+        zorder=4,
+    )
+
+    # Tolerance band ±1 std
+    tolerance_handle = ax1.axhline(
+        expected + std_dev,
+        color=COLORS["green"],
+        lw=1,
+        linestyle=":",
+        alpha=0.7,
+    )
+    ax1.axhline(
+        expected - std_dev, color=COLORS["green"], lw=1, linestyle=":", alpha=0.7
+    )
+    ax1.fill_between(
+        [0, 1],
+        expected - std_dev,
+        expected + std_dev,
+        color=COLORS["green"],
+        alpha=0.08,
+    )
+
     ax1.set_xlabel("Sub-interval", fontsize=10, fontweight="bold")
     ax1.set_ylabel("Frequency", fontsize=10, fontweight="bold")
     ax1.set_xticks(centers)
     ax1.set_xticklabels(xtick_labels, rotation=45, ha="right", fontsize=8)
     ax1.set_ylim(0, max(observed) + 3)
     ax1.legend(
+        [bars1, expected_handle, tolerance_handle],
+        [
+            "Observed ($O_i$)",
+            f"Expected ($E_i = {expected:.2f}".rstrip("0").rstrip(".") + ")$",
+            "Tolerance ($E_i \\pm \\sigma$)",
+        ],
         fontsize=9,
         facecolor=COLORS["panel"],
         edgecolor=COLORS["grid"],
@@ -168,9 +180,9 @@ def main():
     ax2 = axes[1]
     style_axis(ax2, "B — Contributions to $\\chi^2_0$ Statistic")
 
-    budget = chi_crit / m_int  # The theoretical fair share per interval
+    expected_level = chi_crit / m_int  # The theoretical fair share per interval
     contrib_colors = [
-        COLORS["red"] if c > budget else COLORS["orange"] for c in contribs
+        COLORS["red"] if c > expected_level else COLORS["orange"] for c in contribs
     ]
 
     bars2 = ax2.bar(
@@ -182,27 +194,6 @@ def main():
         edgecolor=COLORS["panel"],
         linewidth=0.6,
         zorder=3,
-        label="$(E_i - O_i)^2 / E_i$",
-    )
-
-    # Budget line
-    ax2.axhline(
-        budget,
-        color=COLORS["gold"],
-        lw=1.5,
-        linestyle="--",
-        zorder=4,
-        label=f"Fair Share ($\\chi^2_{{crit}}/m = {budget:.2f}$)",
-    )
-
-    # Actual average line
-    ax2.axhline(
-        chi2_0 / m_int,
-        color=COLORS["red"],
-        lw=1.2,
-        linestyle=":",
-        alpha=0.7,
-        label=f"Actual Average ($\\chi^2_0/m = {chi2_0/m_int:.2f}$)",
     )
 
     # Annotate each bar with its mathematical contribution
@@ -217,12 +208,36 @@ def main():
             color=COLORS["text"],
         )
 
+    # Expected level line
+    expected_level_handle = ax2.axhline(
+        expected_level,
+        color=COLORS["rose"],
+        lw=1.5,
+        linestyle="--",
+        zorder=4,
+    )
+
+    # Observed level line
+    observed_level_handle = ax2.axhline(
+        chi2_0 / m_int,
+        color=COLORS["purple"],
+        lw=1.5,
+        linestyle=":",
+        alpha=0.7,
+    )
+
     ax2.set_xlabel("Sub-interval", fontsize=10, fontweight="bold")
-    ax2.set_ylabel("Contribution $(E_i - O_i)^2 / E_i$", fontsize=10, fontweight="bold")
+    ax2.set_ylabel("Contribution", fontsize=10, fontweight="bold")
     ax2.set_xticks(centers)
     ax2.set_xticklabels(xtick_labels, rotation=45, ha="right", fontsize=8)
-    ax2.set_ylim(0, max(max(contribs), budget) * 1.35)
+    ax2.set_ylim(0, max(max(contribs), expected_level) * 1.35)
     ax2.legend(
+        [bars2, expected_level_handle, observed_level_handle],
+        [
+            "Bin Contributions $(E_i - O_i)^2 / E_i$",
+            f"Expected Level ($\\chi^2_{{crit}}/m = {expected_level:.2f}$)",
+            f"Observed Level ($\\chi^2_0/m = {chi2_0/m_int:.2f}$)",
+        ],
         fontsize=9,
         facecolor=COLORS["panel"],
         edgecolor=COLORS["grid"],
@@ -231,13 +246,13 @@ def main():
 
     # ── 4. Summary Results Box ────────────────────────────────────────────────
     test_passed = chi2_0 < chi_crit
-    result_text = "Do not reject $H_0$ ✓" if test_passed else "Reject $H_0$ ✗"
+    result_text = "Do not reject $H_0$" if test_passed else "Reject $H_0$"
     box_color = COLORS["green"] if test_passed else COLORS["red"]
 
     summary = (
         f"$\\chi^2_0 = {chi2_0:.3f}$\n"
         f"$\\chi^2_{{0.05,\\,9}} = {chi_crit:.3f}$\n"
-        f"$\\chi^2_0 < \\chi^2_{{crit}}$ → {result_text}"
+        f"{result_text}"
     )
 
     ax2.text(
@@ -258,9 +273,8 @@ def main():
         ),
     )
 
-    plt.rcParams["savefig.dpi"] = 300
-
     plt.tight_layout()
+    fig.subplots_adjust(wspace=0.14)
     plt.show()
 
 
