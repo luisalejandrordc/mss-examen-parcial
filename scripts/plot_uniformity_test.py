@@ -180,9 +180,9 @@ def main():
     ax2 = axes[1]
     style_axis(ax2, "B — Contributions to $\\chi^2_0$ Statistic")
 
-    expected_level = chi_crit / m_int  # The theoretical fair share per interval
+    critical_level = chi_crit / m_int  # The theoretical fair share per interval
     contrib_colors = [
-        COLORS["red"] if c > expected_level else COLORS["orange"] for c in contribs
+        COLORS["red"] if c > critical_level else COLORS["orange"] for c in contribs
     ]
 
     bars2 = ax2.bar(
@@ -208,9 +208,9 @@ def main():
             color=COLORS["text"],
         )
 
-    # Expected level line
-    expected_level_handle = ax2.axhline(
-        expected_level,
+    # Critical level line
+    critical_level_handle = ax2.axhline(
+        critical_level,
         color=COLORS["rose"],
         lw=1.5,
         linestyle="--",
@@ -230,12 +230,12 @@ def main():
     ax2.set_ylabel("Contribution", fontsize=10, fontweight="bold")
     ax2.set_xticks(centers)
     ax2.set_xticklabels(xtick_labels, rotation=45, ha="right", fontsize=8)
-    ax2.set_ylim(0, max(max(contribs), expected_level) * 1.35)
+    ax2.set_ylim(0, max(contribs.max(), critical_level) * 1.35)
     ax2.legend(
-        [bars2, expected_level_handle, observed_level_handle],
+        [bars2, critical_level_handle, observed_level_handle],
         [
             "Bin Contributions $(E_i - O_i)^2 / E_i$",
-            f"Expected Level ($\\chi^2_{{crit}}/m = {expected_level:.2f}$)",
+            f"Critical Level ($\\chi^2_{{crit}}/m = {critical_level:.2f}$)",
             f"Observed Level ($\\chi^2_0/m = {chi2_0/m_int:.2f}$)",
         ],
         fontsize=9,
