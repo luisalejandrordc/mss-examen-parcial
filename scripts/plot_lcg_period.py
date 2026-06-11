@@ -61,8 +61,6 @@ def main():
     # ── 1. Generate Pseudorandom Sequence ─────────────────────────────────────
     seed, a, c, g = 55, 37, 19, 7
     m = 2**g
-
-    # Generate the sequence and convert to a NumPy array for efficient slicing
     sequence = linear_congruential_generator(seed, a, c, m)
 
     n_samples = len(sequence)  # Should equal m (128) for a full period LCG
