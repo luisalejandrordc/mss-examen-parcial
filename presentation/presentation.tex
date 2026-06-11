@@ -1204,90 +1204,68 @@
 	\end{exampleblock}
 \end{frame}
 
-% ─────────────────────────────────────────────────────────────────────────────
-% SLIDE 4 — Marco Teórico III: Decision Rule
-% ─────────────────────────────────────────────────────────────────────────────
-\begin{frame}{Marco Teórico III — Regla de Decisión}
-	\begin{block}{¿Por qué unilateral y no bilateral?}
-		\small
-		Un $\chi^2_0$ muy \textit{pequeño} no es problemático — simplemente
-		indica que las frecuencias observadas son muy cercanas a las esperadas,
-		lo cual es deseable. Solo un $\chi^2_0$ \textit{grande} es evidencia
-		de no uniformidad (algún intervalo tiene muchas más o muchas menos
-		observaciones de lo esperado). Por eso solo se usa la cola derecha.
-	\end{block}
-
-	\vspace{0.3em}
-	\textbf{Parámetros:} $n=100$,\; $m = \sqrt{100} = 10$,\;
-	$E_i = 100/10 = 10$,\; $gl = m-1 = 9$,\; $\alpha = 0.05$
-
-	\[
-		\chi^2_{0.05,\;9} \;=\; 16.919
-		\quad\textnormal{(tabla Chi-cuadrada)}
-	\]
-
+\begin{frame}{Pregunta 6: Validación Estadística — Prueba de Uniformidad}
+	\begin{exampleblock}{Cálculo del Estadístico $\chi_0^2$}
+		\begin{columns}[T]
+			\begin{column}{0.25\textwidth}
+				\textbf{Parámetros:}
+				\begin{itemize}
+					\item $n = 100$
+					\item $m = \sqrt{100} = 10$
+					\item $E_i = 100/10 = 10$
+					\item $df = m - 1 = 9$
+					\item $\alpha = 0.05$
+					\item $\chi^2_{0.05,\;9} \;=\; 16.919$
+				\end{itemize}
+				\begin{align*}
+					\chi^2_0 & \;=\; \sum_{i=1}^{10}\frac{(E_i - O_i)^2}{E_i} \\[6pt]
+					\chi^2_0 & \;=\; \mathbf{5.2000}
+				\end{align*}
+			\end{column}
+			\begin{column}{0.65\textwidth}
+				\begin{center}
+					\vspace{-12pt}
+					\small
+					\renewcommand{\arraystretch}{1.2}
+					\begin{tabular}{ccccc}
+						\toprule
+						\textbf{Sub-intervalo} & $O_i$        & $E_i$        & $(E_i - O_i)^2$ & $(E_i-O_i)^2/E_i$ \\
+						\midrule
+						$[0.0 - 0.1)$          & 12           & 10           & 4               & 0.4000            \\
+						$[0.1 - 0.2)$          & 9            & 10           & 1               & 0.1000            \\
+						$[0.2 - 0.3)$          & 10           & 10           & 0               & 0.0000            \\
+						$[0.3 - 0.4)$          & 13           & 10           & 9               & 0.9000            \\
+						$[0.4 - 0.5)$          & 14           & 10           & 16              & 1.6000            \\
+						$[0.5 - 0.6)$          & 9            & 10           & 1               & 0.1000            \\
+						$[0.6 - 0.7)$          & 8            & 10           & 4               & 0.4000            \\
+						$[0.7 - 0.8)$          & 10           & 10           & 0               & 0.0000            \\
+						$[0.8 - 0.9)$          & 6            & 10           & 16              & 1.6000            \\
+						$[0.9 - 1.0]$          & 9            & 10           & 1               & 0.1000            \\
+						\midrule
+						\textbf{Total}         & \textbf{100} & \textbf{100} &                 & \textbf{5.2000}   \\
+						\bottomrule
+					\end{tabular}
+				\end{center}
+			\end{column}
+		\end{columns}
+	\end{exampleblock}
 \end{frame}
 
-
-% ─────────────────────────────────────────────────────────────────────────────
-% SLIDE 5 — Aplicación Numérica: Frequency Table
-% ─────────────────────────────────────────────────────────────────────────────
-\begin{frame}{Aplicación Numérica — Tabla de Frecuencias}
-
-	\begin{center}
-		\small
-		\renewcommand{\arraystretch}{1.25}
-		\begin{tabular}{ccccc}
-			\toprule
-			\textbf{Sub-intervalo} & $O_i$        & $E_i$        & $(E_i - O_i)^2$ & $(E_i-O_i)^2/E_i$ \\
-			\midrule
-			$[0.0 - 0.1)$          & 12           & 10           & 4               & 0.4000            \\
-			$[0.1 - 0.2)$          & 9            & 10           & 1               & 0.1000            \\
-			$[0.2 - 0.3)$          & 10           & 10           & 0               & 0.0000            \\
-			$[0.3 - 0.4)$          & 13           & 10           & 9               & 0.9000            \\
-			$[0.4 - 0.5)$          & 14           & 10           & 16              & 1.6000            \\
-			$[0.5 - 0.6)$          & 9            & 10           & 1               & 0.1000            \\
-			$[0.6 - 0.7)$          & 8            & 10           & 4               & 0.4000            \\
-			$[0.7 - 0.8)$          & 10           & 10           & 0               & 0.0000            \\
-			$[0.8 - 0.9)$          & 6            & 10           & 16              & 1.6000            \\
-			$[0.9 - 1.0]$          & 9            & 10           & 1               & 0.1000            \\
-			\midrule
-			\textbf{Total}         & \textbf{100} & \textbf{100} &                 & \textbf{5.2000}   \\
-			\bottomrule
-		\end{tabular}
-	\end{center}
-
-	\[
-		\chi^2_0 \;=\; \sum_{i=1}^{10}\frac{(E_i - O_i)^2}{E_i} \;=\; \mathbf{5.2000}
-	\]
-
-\end{frame}
-
-
-% ─────────────────────────────────────────────────────────────────────────────
-% SLIDE 6 — Conclusion
-% ─────────────────────────────────────────────────────────────────────────────
-\begin{frame}{Conclusión — Prueba Chi-Cuadrada de Uniformidad}
-
-	\begin{block}{Verificación}
+\begin{frame}{Pregunta 6: Validación Estadística — Prueba de Uniformidad}
+	\begin{exampleblock}{Conclusión Estadística}
+		\justifying
+		Como $\chi^2_0 = 5.200 < \chi^2_{0.05,\;9} = 16.919$,
+		\textbf{no se rechaza $H_0$} al 95\% de confianza.
+		Los 100 números pseudoaleatorios se distribuyen de manera
+		\textbf{uniforme} en el intervalo $(0,1)$.
 		\[
 			\chi^2_0 \;<\; \chi^2_{0.05,\;9}
 			\quad\Longrightarrow\quad
 			\mathbf{5.200} \;<\; 16.919
 			\quad\checkmark
 		\]
-	\end{block}
-
-	\vspace{0.4em}
-	\begin{alertblock}{Conclusión estadística}
-		Como $\chi^2_0 = 5.200 < \chi^2_{0.05,\;9} = 16.919$,
-		\textbf{no se rechaza $H_0$} al 95\% de confianza.
-		Los 100 números pseudoaleatorios se distribuyen de manera
-		\textbf{uniforme} en el intervalo $(0,1)$.
-	\end{alertblock}
-
-	\vspace{0.5em}
-	\begin{block}{Validación completa del generador ACL}
+	\end{exampleblock}
+	\begin{alertblock}{Validación completa del generador ACL}
 		\small
 		\begin{center}
 			\renewcommand{\arraystretch}{1.2}
@@ -1303,8 +1281,7 @@
 		\end{center}
 		El generador queda \textbf{completamente validado} para alimentar
 		el modelo de simulación de los \textit{jumbos}.
-	\end{block}
-
+	\end{alertblock}
 \end{frame}
 
 
