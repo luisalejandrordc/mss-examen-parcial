@@ -1,63 +1,126 @@
 # ══════════════════════════════════════════════════════════════════════════════
-# Calculate and plot the running average of a process variable
+# STATISTICAL VALIDATION: Running Average Stabilization
+# ──────────────────────────────────────────────────────────────────────────────
+# Description: Calculates and plots the running average of a process variable
+#              to visually identify system stabilization (warm-up phase).
 # ══════════════════════════════════════════════════════════════════════════════
-
 from pathlib import Path
 
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-# Variables for mining_simulation.csv: "interarrival_time", "crushing_time", "mineral_load"
-# Variables for processing_time_x.csv: "processing_time"
-VARIABLE = "processing_time"
-
-# ── Load data ──────────────────────────────────────────────────────────────────
-SCRIPT_DIR = Path(__file__).resolve().parent
-csv_path = SCRIPT_DIR.parent / "data" / "processing_time_1.csv"
-
-df = pd.read_csv(csv_path)
-data = df[VARIABLE].to_numpy(dtype=float)
-running_avg = np.cumsum(data) / np.arange(1, len(data) + 1)
-idx = np.arange(len(data))
-
-# ── Plot data ──────────────────────────────────────────────────────────────────
+# ── Constants & Theming ───────────────────────────────────────────────────────
 COLORS = {
-    "m1": "#e06c75",  # red
-    "m2": "#61afef",  # blue
-    "m3": "#98c379",  # green
-    "m4": "#e5c07b",  # yellow
-    "m5": "#c678dd",  # purple
-    "avg": "#abb2bf",
+    "bg": "#1e2127",
     "panel": "#282c34",
+    "grid": "#3e4451",
+    "text": "#abb2bf",
+    "gold": "#e8d5a3",
+    "blue": "#61afef",
+    "green": "#98c379",
+    "red": "#e06c75",
+    "orange": "#e5c07b",
+    "purple": "#c678dd",
+    "teal": "#56b6c2",
+    "peach": "#ffc9b9",
+    "rose": "#f49cbb",
+    "white": "#ffffff",
 }
 
-fig, ax = plt.subplots(figsize=(12, 6))
-fig.patch.set_facecolor("#1e2127")
-
-ax.plot(idx, running_avg, color=COLORS["m2"], lw=1.5, label="Running avg")
-
-ax.set_facecolor(COLORS["panel"])
-ax.tick_params(colors="#abb2bf", labelsize=10)
-for spine in ax.spines.values():
-    spine.set_edgecolor("#3e4451")
-ax.grid(True, alpha=0.15, color="#abb2bf")
-ax.set_xlabel("Observation", color="#abb2bf", fontsize=10, fontweight="bold")
-ax.set_ylabel("Running average", color="#abb2bf", fontsize=10, fontweight="bold")
-ax.legend(
-    loc="upper right",
-    fontsize=10,
-    facecolor=COLORS["panel"],
-    labelcolor="#abb2bf",
-    edgecolor="#3e4451",
+# Set global matplotlib parameters for consistency
+plt.rcParams.update(
+    {
+        "figure.facecolor": COLORS["bg"],
+        "axes.facecolor": COLORS["panel"],
+        "axes.edgecolor": COLORS["grid"],
+        "axes.labelcolor": COLORS["text"],
+        "xtick.color": COLORS["text"],
+        "ytick.color": COLORS["text"],
+        "text.color": COLORS["text"],
+        "grid.color": COLORS["grid"],
+        "grid.alpha": 0.4,
+        "font.family": "sans-serif",
+        "savefig.dpi": 300,
+    }
 )
 
-ax.set_title(
-    "Crusher Processing Time Stabilization Curve",
-    color="#e8d5a3",
-    fontsize=14,
-    fontweight="bold",
-    y=1.04,
-)
 
-plt.show()
+def main():
+    # ══════════════════════════════════════════════════════════════════════════
+    # 1. Manage Data
+    # ══════════════════════════════════════════════════════════════════════════
+    LOAD = False  # Toggle to load existing CSV data or generate randomly
+
+    # Variables for mining_simulation.csv: "interarrival_time", "crushing_time", "mineral_load"
+    # Variables for processing_time_x.csv: "processing_time"
+    VARIABLE = "processing_time"
+
+    if LOAD:
+        # ── Load existing data ────────────────────────────────────────────────
+        SCRIPT_DIR = Path(__file__).resolve().parent
+        csv_path = SCRIPT_DIR.parent / "data" / "processing_time_1.csv"
+
+        df = pd.read_csv(csv_path)
+        data = df[VARIABLE].to_numpy(dtype=float)
+    else:
+        # ── Generate random exponential-like data ─────────────────────────────
+        np.random.seed(123)
+        r = np.random.rand(100)
+        data = -12 * np.log(1 - r)  # Expected mean: 12
+        data = data.round(3)
+
+    # ── Compute running average ───────────────────────────────────────────────
+    running_avg = np.cumsum(data) / np.arange(1, len(data) + 1)
+    idx = np.arange(len(data))
+    grand_mean = float(np.mean(data))
+
+    # ══════════════════════════════════════════════════════════════════════════
+    # 2. Plotting Setup
+    # ══════════════════════════════════════════════════════════════════════════
+    fig, ax = plt.subplots(figsize=(12, 6))
+
+    # Main running average line
+    ax.plot(idx, running_avg, color=COLORS["blue"], lw=2, label="Running Average")
+
+    # Grand Mean reference line to show convergence
+    ax.axhline(
+        grand_mean,
+        color=COLORS["green"],
+        lw=1.5,
+        linestyle="--",
+        alpha=0.6,
+        label=f"Grand Mean ($\\mu \\approx {grand_mean:.2f}$)",
+    )
+
+    # Axis formatting
+    ax.grid(True)
+    ax.set_xlabel(
+        "Observation Index ($i$)", fontsize=10, fontweight="bold", labelpad=10
+    )
+    ax.set_ylabel("Running Average", fontsize=10, fontweight="bold", labelpad=10)
+
+    # Title styling
+    ax.set_title(
+        "Crusher Prossesing Time Stabilization Curve",
+        color=COLORS["gold"],
+        fontsize=14,
+        fontweight="bold",
+        pad=15,
+    )
+
+    # Legend
+    ax.legend(
+        loc="upper right",
+        fontsize=10,
+        facecolor=COLORS["panel"],
+        edgecolor=COLORS["grid"],
+        labelcolor=COLORS["text"],
+    )
+
+    # ── Render ────────────────────────────────────────────────────────────────
+    plt.show()
+
+
+if __name__ == "__main__":
+    main()

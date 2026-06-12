@@ -311,35 +311,101 @@
 	\end{alertblock}
 \end{frame}
 
+
+
+
+
+
+
+
+
+
+
+
+% ─────────────────────────────────────────────────────────────────────────────
+% NEW FRAME 1 — Inverse Transform Sampling: theory + data generation
+% Replaces the old "Con ayuda de inteligencia artificial..." frame entirely
+% ─────────────────────────────────────────────────────────────────────────────
+\begin{frame}{Pregunta 2: Generación de Datos — Transformada Inversa}
+	\begin{emptyblock}
+		\justifying
+		\textbf{Método de la Transformada Inversa: }
+		Puente entre los números pseudoaleatorios $r_i \sim U(0,1)$ y
+		cualquier distribución de probabilidad. Consiste en cuatro pasos:
+		\begin{enumerate}
+			\small
+			\item Definir la función de densidad $f(x)$ de la variable a modelar.
+			\item Calcular la función acumulada $F(x)$.
+			\item Despejar $x$ obteniendo la \textbf{función acumulada inversa} $F^{-1}(r)$.
+			\item Sustituir $r_i \sim U(0,1)$ en $F^{-1}(r)$ para generar $x_i$.
+		\end{enumerate}
+	\end{emptyblock}
+	(Generación de Datos)
+	\begin{exampleblock}{Aplicación: Distribución Exponencial con media $\mu$}
+		\justifying
+		Los tiempos de procesamiento de la chancadora siguen una distribución
+		exponencial con media $\mu = 12$ min. Partiendo de $f(x) = \frac{1}{\mu}e^{-x/\mu}$:
+		\[
+			F(x) = 1 - e^{-x/\mu}
+			\quad\xrightarrow{\;r_i = F(x_i)\;}\quad
+			x_i = -\mu\ln(1 - r_i)
+		\]
+		Los 100 tiempos de procesamiento se generaron con:
+		\vspace{-4pt}
+		\begin{center}
+			\ttfamily\small
+			r = np.random.rand(100) \quad;\quad
+			x = $-$12 * np.log(1 $-$ r)
+		\end{center}
+	\end{exampleblock}
+\end{frame}
+
+
+% ─────────────────────────────────────────────────────────────────────────────
+% NEW FRAME 2 — Moving average calculation (first 8 observations)
+% Same layout as the old frame, updated with ITS-generated values
+% ─────────────────────────────────────────────────────────────────────────────
 \begin{frame}{Pregunta 2: Promedio Móvil y Estado Estable}
 	\begin{exampleblock}{Cálculo del Promedio Móvil}
 		\justifying
-		Con ayuda de inteligencia artificial se generó un dataset sintético de 100
-		observaciones $r_i$ para el \textbf{tiempo de procesamiento de la chancadora primaria} del
-		sistema en estudio. A continuación, se detalla el cálculo del \textbf{promedio móvil}
-		para las primeras 8 observaciones (el restante fue determinado mediante un script en Python).
+		Aplicando $x_i = -12\ln(1-r_i)$ con $r_i \sim U(0,1)$, se generaron 100
+		\textbf{tiempos de procesamiento de la chancadora primaria} $x_i$ (min).
+		La sequencia de números pseudoaleatorios $r_i$ fue generada usando la
+		librería \texttt{numpy} con \texttt{seed=123}. A continuación, se
+		detalla el cálculo del \textbf{promedio móvil} para los primeros 8
+		datos (el resto fue determinado mediante un script en Python).
 		\vspace{4pt}
 		\begin{columns}[c]
-			\column{0.44\linewidth}
-			\[ \bar{r}_1 = \dfrac{12.59}{1} = 12.59 \]
-			\[ \bar{r}_2 = \dfrac{12.59 + 10.56}{2} = \dfrac{23.15}{2} = 11.575 \]
-			\[ \bar{r}_3 = \dfrac{23.15 + 13.07}{3} = \dfrac{36.22}{3} = 12.073 \]
-			\[ \bar{r}_4 = \dfrac{36.22 + 15.87}{4} = \dfrac{52.09}{4} = 13.0225 \]
+			\column{0.46\linewidth}
+			\[ \bar{x}_1 = \dfrac{11.156}{1} = 11.156 \]
+			\[ \bar{x}_2 = \dfrac{11.156 + 6.696}{2} = \dfrac{17.852}{2} = 8.926 \]
+			\[ \bar{x}_3 = \dfrac{17.852 + 17.458}{3} = \dfrac{35.310}{3} = 11.770 \]
+			\[ \bar{x}_4 = \dfrac{35.310 + 0.320}{4} = \dfrac{35.630}{4} = 8.908 \]
 
-			\column{0.44\linewidth}
-			\[ \bar{r}_5 = \dfrac{52.09 + 10.25}{5} = \dfrac{62.34}{5} = 12.468 \]
-			\[ \bar{r}_6 = \dfrac{62.34 + 10.25}{6} = \dfrac{72.59}{6} = 12.0983 \]
-			\[ \bar{r}_7 = \dfrac{72.59 + 16.05}{7} = \dfrac{88.64}{7} = 12.6629 \]
-			\[ \bar{r}_8 = \dfrac{88.64 + 13.46}{8} = \dfrac{102.10}{8} = 12.7625 \]
+			\column{0.46\linewidth}
+			\[ \bar{x}_5 = \dfrac{35.630 + 16.505}{5} = \dfrac{52.135}{5} = 10.427 \]
+			\[ \bar{x}_6 = \dfrac{52.135 + 8.338}{6} = \dfrac{60.473}{6} = 10.079 \]
+			\[ \bar{x}_7 = \dfrac{60.473 + 3.533}{7} = \dfrac{64.006}{7} = 9.144 \]
+			\[ \bar{x}_8 = \dfrac{64.006 + 0.478}{8} = \dfrac{64.484}{8} = 8.061 \]
 		\end{columns}
 	\end{exampleblock}
 \end{frame}
 
+
+
+
+
+
+
+
+
+
+
 \begin{frame}{Pregunta 2: Promedio Móvil y Estado Estable}
 	\begin{exampleblock}{Curva de Estabilización}
 		\justifying
-		Se presenta la gráfica del promedio móvil $\bar{r}_n$ para las
-		100 observaciones, denominada \textbf{Curva de Estabilización}.
+		Se presenta la gráfica del promedio móvil $\bar{x}_n$ considerando
+		el total de datos, denominada \textbf{Curva de Estabilización}.
 		En ella se distingue el cambio del sistema del estado
 		transitorio al estado estable.\\[8pt]
 		\centering
