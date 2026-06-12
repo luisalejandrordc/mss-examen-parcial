@@ -20,30 +20,18 @@ from warmup.detection import (
 )
 from warmup.statistics import running_average
 
-# ══════════════════════════════════════════════════════════════════════════════
-# Manage data
-# ══════════════════════════════════════════════════════════════════════════════
+# Variables for mining_simulation.csv: "interarrival_time", "crushing_time", "mineral_load"
+# Variables for processing_time_x.csv: "processing_time"
+VARIABLE = "processing_time"
 
-LOAD = False  # Decides whether to load existing data or generate it randomly
+# ── Load data ──────────────────────────────────────────────────────────────────
+SCRIPT_DIR = Path(__file__).resolve().parent
+csv_path = SCRIPT_DIR.parent / "data" / "output.csv"
 
-if LOAD:
-    # ── Load existing data ─────────────────────────────────────────────────────
-    SCRIPT_DIR = Path(__file__).resolve().parent
-    csv_path = SCRIPT_DIR.parent / "data" / "processing_time_1.csv"
-    df = pd.read_csv(csv_path)
-    # Headers for mining_simulation.csv: "interarrival_time", "crushing_time", "mineral_load"
-    # Headers for processing_time_x.csv: "processing_time"
-    HEADER = "processing_time"
-    data = df[HEADER].to_numpy(dtype=float)
-else:
-    # ── Generate random data ───────────────────────────────────────────────────
-    np.random.seed(123)
-    r = np.random.rand(100)
-    data = -12 * np.log(1 - r)  # expected mean: 12
-    data = data.round(3)
-
-# ── Compute running average ────────────────────────────────────────────────────
+df = pd.read_csv(csv_path)
+data = df[VARIABLE].to_numpy(dtype=float)
 running_avg = running_average(data)
+
 
 # ══════════════════════════════════════════════════════════════════════════════
 # Run all methods
@@ -54,14 +42,20 @@ wu3 = method_ci_width(data)
 wu4 = method_forward_cusum(data)
 wu5 = method_backward_cusum(data)
 
+from warmup.detection import method_schruben
+
+res = method_schruben(data)
+print(res.warmup)
+print(res.info)
+
 print("=" * 55)
 print(f"  {'Method':<40} {'Warm-up':>8}")
 print("=" * 55)
 print(f"  {'1. Relative Change (2%, w=10)':<40} {wu1.warmup:>8}")
 print(f"  {'2. Welch Graphical (±5% band)':<40} {wu2.warmup:>8}")
 print(f"  {'3. CI Width Stabilization (5%, w=10)':<40} {wu3.warmup:>8}")
-print(f"  {'4. Forward CUSUM (k=0.4σ, h=4σ)':<40} {wu4.warmup:>8}")
-print(f"  {'5. Backward CUSUM (k=0.4σ, h=4σ)':<40} {wu5.warmup:>8}")
+print(f"  {'4. Forward CUSUM (k=0.5σ, h=4σ)':<40} {wu4.warmup:>8}")
+print(f"  {'5. Backward CUSUM (k=0.5σ, h=4σ)':<40} {wu5.warmup:>8}")
 print("=" * 55)
 
 idx = np.arange(len(data))
@@ -294,11 +288,11 @@ ax6.plot(idx, running_avg, color=COLORS["avg"], lw=1.5, zorder=1, label="Running
 
 warmups = [wu1, wu2, wu3, wu4, wu5]
 labels = [
-    "M1 R-Change",
+    "M1 Rel.Change",
     "M2 Welch",
     "M3 CI Width",
-    "M4 F-CUSUM",
-    "M5 B-CUSUM",
+    "M4 Forward CUSUM",
+    "M5 Backward CUSUM",
 ]
 cols = [COLORS["m1"], COLORS["m2"], COLORS["m3"], COLORS["m4"], COLORS["m5"]]
 
@@ -319,7 +313,6 @@ ax6.legend(
     facecolor=COLORS["panel"],
     labelcolor="#abb2bf",
     edgecolor="#3e4451",
-    ncols=2,
 )
 
 # ── Super title ───────────────────────────────────────────────────────────────

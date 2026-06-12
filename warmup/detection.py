@@ -28,7 +28,7 @@ def _validate_input(data: np.ndarray):
 # METHOD 1 — Relative Change Criterion
 # ══════════════════════════════════════════════════════════════════════════════
 def method_relative_change(
-    data: np.ndarray, threshold: float = 0.02, window: Optional[int] = None
+    data: np.ndarray, threshold: float = 0.05, window: Optional[int] = None
 ) -> WarmupResult[RelativeChange]:
     """
     Warm-up ends at the first index i such that all relative changes
@@ -79,7 +79,7 @@ def method_welch(
     _validate_input(data)
     n = len(data)
     if smoothing_window is None:
-        smoothing_window = max(5, n // 20)  # Controls noise reduction
+        smoothing_window = max(5, n // 15)  # Controls noise reduction
     if stability_window is None:
         stability_window = max(5, n // 10)  # Controls persistence requirement
 
@@ -152,7 +152,7 @@ def method_ci_width(
 # METHOD 4 — FORWARD CUSUM (Argmax Peak Detection)
 # ══════════════════════════════════════════════════════════════════════════════
 def method_forward_cusum(
-    data: np.ndarray, k_factor: float = 0.5
+    data: np.ndarray, k_factor: float = 0.4
 ) -> WarmupResult[Cusum]:
     """
     CUSUM tracks deviations of individual observations from a target (here,
@@ -185,17 +185,17 @@ def method_forward_cusum(
     """
     _validate_input(data)
     n = len(data)
-    stable_half = data[n // 2 :]
-    mu0 = stable_half.mean()
-    sigma = stable_half.std(ddof=1)
+    running_avg = running_average(data)
+    mu0 = running_avg.mean()
+    sigma = running_avg.std(ddof=1)
     k = k_factor * sigma
     h = 4 * sigma  # heuristic decision limit
 
     c_plus = np.zeros(n)
     c_minus = np.zeros(n)
     for i in range(1, n):
-        c_plus[i] = max(0, c_plus[i - 1] + (data[i] - mu0) - k)
-        c_minus[i] = max(0, c_minus[i - 1] - (data[i] - mu0) - k)
+        c_plus[i] = max(0, c_plus[i - 1] + (running_avg[i] - mu0) - k)
+        c_minus[i] = max(0, c_minus[i - 1] - (running_avg[i] - mu0) - k)
 
     max_plus = np.max(c_plus)
     max_minus = np.max(c_minus)
@@ -214,7 +214,7 @@ def method_forward_cusum(
 # METHOD 5 — BACKWARD CUSUM (Reverse Cumulative Sum)
 # ══════════════════════════════════════════════════════════════════════════════
 def method_backward_cusum(
-    data: np.ndarray, k_factor: float = 0.5
+    data: np.ndarray, k_factor: float = 0.4
 ) -> WarmupResult[Cusum]:
     """
     By reading the timeline backwards, the simulation starts in a stable state
@@ -231,18 +231,17 @@ def method_backward_cusum(
     """
     _validate_input(data)
     n = len(data)
-    rev_data = data[::-1]
-    stable_half = rev_data[: n // 2]
-    mu0 = stable_half.mean()
-    sigma = stable_half.std(ddof=1)
+    running_avg = running_average(data)[::-1]
+    mu0 = running_avg.mean()
+    sigma = running_avg.std(ddof=1)
     k = k_factor * sigma
     h = 4 * sigma  # heuristic decision limit
 
     c_plus = np.zeros(n)
     c_minus = np.zeros(n)
     for i in range(1, n):
-        c_plus[i] = max(0, c_plus[i - 1] + (rev_data[i] - mu0) - k)
-        c_minus[i] = max(0, c_minus[i - 1] - (rev_data[i] - mu0) - k)
+        c_plus[i] = max(0, c_plus[i - 1] + (running_avg[i] - mu0) - k)
+        c_minus[i] = max(0, c_minus[i - 1] - (running_avg[i] - mu0) - k)
 
     signals = np.where((c_plus > h) | (c_minus > h))[0]
     warmup = n - int(signals[0]) if len(signals) > 0 else 0
