@@ -26,6 +26,9 @@ def _validate_input(data: np.ndarray):
         raise ValueError("data must contain at least two observations")
 
 
+# ══════════════════════════════════════════════════════════════════════════════
+# METHOD 1 — Relative Change Criterion
+# ══════════════════════════════════════════════════════════════════════════════
 def method_relative_change(
     data: np.ndarray, threshold: float = 0.05, window: Optional[int] = None
 ) -> WarmupResult[RelativeChange]:
@@ -51,6 +54,9 @@ def method_relative_change(
     return WarmupResult(warmup, RelativeChange(rel_change, threshold))
 
 
+# ══════════════════════════════════════════════════════════════════════════════
+# METHOD 2 — Welch's Graphical Method
+# ══════════════════════════════════════════════════════════════════════════════
 def method_welch(
     data: np.ndarray,
     smoothing_window: Optional[int] = None,
@@ -88,6 +94,9 @@ def method_welch(
     return WarmupResult(warmup, Welch(smoothed, grand_mean, band))
 
 
+# ══════════════════════════════════════════════════════════════════════════════
+# METHOD 3 — Confidence Interval Width Stabilization
+# ══════════════════════════════════════════════════════════════════════════════
 def method_ci_width(
     data: np.ndarray, threshold: float = 0.05, window: Optional[int] = None
 ) -> WarmupResult[CIWidth]:
@@ -118,6 +127,9 @@ def method_ci_width(
     return WarmupResult(warmup, CIWidth(ci_margin, rel_reduction, threshold))
 
 
+# ══════════════════════════════════════════════════════════════════════════════
+# METHOD 4 — FORWARD CUSUM (Argmax Peak Detection)
+# ══════════════════════════════════════════════════════════════════════════════
 def method_forward_cusum(
     data: np.ndarray, k_factor: float = 0.4
 ) -> WarmupResult[Cusum]:
@@ -153,6 +165,9 @@ def method_forward_cusum(
     return WarmupResult(warmup, Cusum(c_plus, c_minus, h))
 
 
+# ══════════════════════════════════════════════════════════════════════════════
+# METHOD 5 — BACKWARD CUSUM (Reverse Cumulative Sum)
+# ══════════════════════════════════════════════════════════════════════════════
 def method_backward_cusum(
     data: np.ndarray, k_factor: float = 0.4
 ) -> WarmupResult[Cusum]:
