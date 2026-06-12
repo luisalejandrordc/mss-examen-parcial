@@ -63,11 +63,13 @@ def main():
 
         df = pd.read_csv(csv_path)
         data = df[VARIABLE].to_numpy(dtype=float)
+        mu = None
     else:
         # ── Generate random exponential-like data ─────────────────────────────
         np.random.seed(123)
         r = np.random.rand(100)
-        data = -12 * np.log(1 - r)  # Expected mean: 12
+        mu = 12  # Theoretical mean
+        data = -mu * np.log(1 - r)
         data = data.round(3)
 
     # ── Compute running average ───────────────────────────────────────────────
@@ -92,6 +94,21 @@ def main():
         alpha=0.6,
         label=f"Grand Mean ($\\mu \\approx {grand_mean:.2f}$)",
     )
+
+    # Theoretical Mean (only when data was randomly generated)
+    if mu:
+        ax.axhline(
+            mu,
+            color=COLORS["red"],
+            lw=1.5,
+            linestyle="--",
+            alpha=0.6,
+            label=f"Theoretical Mean ($\\mu \\approx {mu}$)",
+        )
+
+    # Transient State: 30% - Steady State: 70%
+    plt.axvspan(0, 30, alpha=0.15, color=COLORS["blue"], label="Transient State")
+    plt.axvspan(30, 100, alpha=0.05, color=COLORS["blue"], label="Steady State")
 
     # Axis formatting
     ax.grid(True)

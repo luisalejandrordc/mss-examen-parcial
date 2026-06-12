@@ -311,39 +311,20 @@
 	\end{alertblock}
 \end{frame}
 
-
-
-
-
-
-
-
-
-
-
-
-% ─────────────────────────────────────────────────────────────────────────────
-% NEW FRAME 1 — Inverse Transform Sampling: theory + data generation
-% Replaces the old "Con ayuda de inteligencia artificial..." frame entirely
-% ─────────────────────────────────────────────────────────────────────────────
 \begin{frame}{Pregunta 2: Generación de Datos — Transformada Inversa}
 	\begin{emptyblock}
 		\justifying
-		\textbf{Método de la Transformada Inversa: }
-		Puente entre los números pseudoaleatorios $r_i \sim U(0,1)$ y
-		cualquier distribución de probabilidad. Consiste en cuatro pasos:
+		\textbf{Método de la Transformada Inversa:} Transforma números aleatorios $r_i \sim U(0,1)$ a cualquier distribución de probabilidad en tres pasos:
 		\begin{enumerate}
 			\small
-			\item Definir la función de densidad $f(x)$ de la variable a modelar.
-			\item Calcular la función acumulada $F(x)$.
+			\item Calcular la función acumulada $F(x)$ a partir de la función densidad $f(x)$.
 			\item Despejar $x$ obteniendo la \textbf{función acumulada inversa} $F^{-1}(r)$.
-			\item Sustituir $r_i \sim U(0,1)$ en $F^{-1}(r)$ para generar $x_i$.
+			\item Sustituir $r_i \sim U(0,1)$ en $x_i = F^{-1}(r_i)$ para generar los datos modelados.
 		\end{enumerate}
 	\end{emptyblock}
-	(Generación de Datos)
-	\begin{exampleblock}{Aplicación: Distribución Exponencial con media $\mu$}
-		\justifying
-		Los tiempos de procesamiento de la chancadora siguen una distribución
+	\begin{exampleblock}{Generación de Datos}
+		\justifying\small
+		Los \textbf{tiempos de procesamiento de la chancadora} siguen una distribución
 		exponencial con media $\mu = 12$ min. Partiendo de $f(x) = \frac{1}{\mu}e^{-x/\mu}$:
 		\[
 			F(x) = 1 - e^{-x/\mu}
@@ -354,62 +335,52 @@
 		\vspace{-4pt}
 		\begin{center}
 			\ttfamily\small
+			np.random.seed(123) \quad;\quad
 			r = np.random.rand(100) \quad;\quad
 			x = $-$12 * np.log(1 $-$ r)
 		\end{center}
 	\end{exampleblock}
 \end{frame}
 
-
-% ─────────────────────────────────────────────────────────────────────────────
-% NEW FRAME 2 — Moving average calculation (first 8 observations)
-% Same layout as the old frame, updated with ITS-generated values
-% ─────────────────────────────────────────────────────────────────────────────
 \begin{frame}{Pregunta 2: Promedio Móvil y Estado Estable}
 	\begin{exampleblock}{Cálculo del Promedio Móvil}
 		\justifying
-		Aplicando $x_i = -12\ln(1-r_i)$ con $r_i \sim U(0,1)$, se generaron 100
-		\textbf{tiempos de procesamiento de la chancadora primaria} $x_i$ (min).
-		La sequencia de números pseudoaleatorios $r_i$ fue generada usando la
-		librería \texttt{numpy} con \texttt{seed=123}. A continuación, se
-		detalla el cálculo del \textbf{promedio móvil} para los primeros 8
-		datos (el resto fue determinado mediante un script en Python).
-		\vspace{4pt}
+		A continuación, se detalla el cálculo del \textbf{promedio móvil} considerando
+		los primeros 10 datos generados (el resto fue determinado mediante un script en Python).
 		\begin{columns}[c]
-			\column{0.46\linewidth}
-			\[ \bar{x}_1 = \dfrac{11.156}{1} = 11.156 \]
-			\[ \bar{x}_2 = \dfrac{11.156 + 6.696}{2} = \dfrac{17.852}{2} = 8.926 \]
-			\[ \bar{x}_3 = \dfrac{17.852 + 17.458}{3} = \dfrac{35.310}{3} = 11.770 \]
-			\[ \bar{x}_4 = \dfrac{35.310 + 0.320}{4} = \dfrac{35.630}{4} = 8.908 \]
+			\column{0.45\linewidth}
+			\small
+			\begin{align*}
+				\bar{x}_1 & = \dfrac{14.307}{1} = 14.307                             \\[6pt]
+				\bar{x}_2 & = \dfrac{14.307 + 4.045}{2} = \dfrac{18.352}{2} = 9.176  \\[6pt]
+				\bar{x}_3 & = \dfrac{18.352 + 3.087}{3} = \dfrac{21.439}{3} = 7.146  \\[6pt]
+				\bar{x}_4 & = \dfrac{21.439 + 9.617}{4} = \dfrac{31.056}{4} = 7.764  \\[6pt]
+				\bar{x}_5 & = \dfrac{31.056 + 15.253}{5} = \dfrac{46.309}{5} = 9.262
+			\end{align*}
 
-			\column{0.46\linewidth}
-			\[ \bar{x}_5 = \dfrac{35.630 + 16.505}{5} = \dfrac{52.135}{5} = 10.427 \]
-			\[ \bar{x}_6 = \dfrac{52.135 + 8.338}{6} = \dfrac{60.473}{6} = 10.079 \]
-			\[ \bar{x}_7 = \dfrac{60.473 + 3.533}{7} = \dfrac{64.006}{7} = 9.144 \]
-			\[ \bar{x}_8 = \dfrac{64.006 + 0.478}{8} = \dfrac{64.484}{8} = 8.061 \]
+			\column{0.45\linewidth}
+			\small
+			\begin{align*}
+				\bar{x}_6    & = \dfrac{46.309 + 6.601}{6} = \dfrac{52.910}{6} = 8.818      \\[6pt]
+				\bar{x}_7    & = \dfrac{52.910 + 47.412}{7} = \dfrac{100.322}{7} = 14.332   \\[6pt]
+				\bar{x}_8    & = \dfrac{100.322 + 13.856}{8} = \dfrac{114.178}{8} = 14.272  \\[6pt]
+				\bar{x}_9    & = \dfrac{114.178 + 7.869}{9} = \dfrac{122.047}{9} = 13.561   \\[6pt]
+				\bar{x}_{10} & = \dfrac{122.047 + 5.973}{10} = \dfrac{128.020}{10} = 12.802
+			\end{align*}
 		\end{columns}
+		\vspace{4pt}
 	\end{exampleblock}
 \end{frame}
-
-
-
-
-
-
-
-
-
-
 
 \begin{frame}{Pregunta 2: Promedio Móvil y Estado Estable}
 	\begin{exampleblock}{Curva de Estabilización}
 		\justifying
-		Se presenta la gráfica del promedio móvil $\bar{x}_n$ considerando
+		Se presenta la gráfica del promedio móvil $\bar{x}_n$ para
 		el total de datos, denominada \textbf{Curva de Estabilización}.
 		En ella se distingue el cambio del sistema del estado
 		transitorio al estado estable.\\[8pt]
 		\centering
-		\includegraphics[width=0.7\linewidth]{stabilization-curve.png}
+		\includegraphics[width=0.65\linewidth]{stabilization-curve.png}
 	\end{exampleblock}
 \end{frame}
 
@@ -445,7 +416,7 @@
 		\[
 			\hat{n}_{\text{wu}} = \min\bigl\{\,n :
 			\delta_{k} < \tau \,,\, \forall \, k \in \{n, \ldots, n+w-1\} \,\bigr\}
-			\qquad \tau = 2\%
+			\qquad \tau = 5\%
 		\]
 		La exigencia de \textit{w observaciones consecutivas} bajo el umbral
 		evita falsos positivos causados por valores atípicos aislados.\\[4pt]
@@ -471,7 +442,7 @@
 \begin{frame}{Pregunta 2: Promedio Móvil y Estado Estable}
 	\begin{emptyblock}
 		\justifying
-		\textbf{Resultado:} El estado estable comienza a partir de la observación N°15.\\[8pt]
+		\textbf{Resultado:} El estado estable comienza a partir de la observación N°22.\\[8pt]
 		\centering
 		\includegraphics[width=0.95\linewidth]{method-1.png}
 	\end{emptyblock}
@@ -528,7 +499,7 @@
 \begin{frame}{Pregunta 2: Promedio Móvil y Estado Estable}
 	\begin{emptyblock}{}
 		\justifying
-		\textbf{Resultado:} El estado estable comienza a partir de la observación N°14.\\[8pt]
+		\textbf{Resultado:} El estado estable comienza a partir de la observación N°46.\\[8pt]
 		\centering
 		\includegraphics[width=0.95\linewidth]{method-2.png}
 	\end{emptyblock}
@@ -559,7 +530,7 @@
 		\[
 			\hat{n}_{\text{wu}} = \min\bigl\{\,n :
 			\Delta W_k < \tau \,,\, \forall \, k \in \{n, \ldots, n+w-1\} \,\bigr\}
-			\qquad \tau = 2\%
+			\qquad \tau = 5\%
 		\]
 		\vspace{-12pt}
 		\begin{columns}[T]
@@ -584,7 +555,7 @@
 \begin{frame}{Pregunta 2: Promedio Móvil y Estado Estable}
 	\begin{emptyblock}
 		\justifying
-		\textbf{Resultado:} El estado estable comienza a partir de la observación N°18.\\[8pt]
+		\textbf{Resultado:} El estado estable comienza a partir de la observación N°20.\\[8pt]
 		\centering
 		\includegraphics[width=0.95\linewidth]{method-3.png}
 	\end{emptyblock}
@@ -593,18 +564,18 @@
 \begin{frame}{Pregunta 2: Promedio Móvil y Estado Estable}
 	\begin{alertblock}{Método 4: CUSUM Directo (\textit{Forward CUSUM})}
 		\justifying
-		\textbf{Idea central:} El CUSUM acumula desviaciones respecto a la media del estado estable
-		$\mu_0$. El punto de transición es el \textbf{máximo (argmax)} de la
-		estadística acumulada — el instante en que los errores transitorios dejan
-		de crecer.\\[4pt]
+		\textbf{Idea central:} El CUSUM acumula desviaciones del promedio móvil
+		$\bar{r}_n$ respecto a su media global $\mu_0$. El punto de transición es el
+		\textbf{máximo (argmax)} de la estadística acumulada — el instante en que los
+		errores transitorios dejan de crecer.\\[4pt]
 		\begin{columns}[T]
 			\begin{column}{0.45\textwidth}
-				\textbf{Estadísticos:} ($k = 0.5\sigma$, \; $h = 4\sigma$)
+				\textbf{Estadísticos:} ($k = 0.4\,\sigma$, \; $h = 4\,\sigma$)
 				\[
-					C^+_i = \max\!\bigl(0,\; C^+_{i-1} + (x_i - \mu_0) - k\bigr)
+					C^+_i = \max\!\bigl(0,\; C^+_{i-1} + (\bar{r}_i - \mu_0) - k\bigr)
 				\]
 				\[
-					C^-_i = \max\!\bigl(0,\; C^-_{i-1} - (x_i - \mu_0) - k\bigr)
+					C^-_i = \max\!\bigl(0,\; C^-_{i-1} - (\bar{r}_i - \mu_0) - k\bigr)
 				\]
 			\end{column}
 			\begin{column}{0.45\textwidth}
@@ -618,10 +589,8 @@
 			\end{column}
 		\end{columns}
 		\vspace{10pt}
-		% \small
-		Usar el último índice con señal (en lugar del argmax) sobreestima
-		el warm-up por el efecto ``drain-out'' — el CUSUM tarda en volver a cero tras la
-		fase transitoria.\\[4pt]
+		Usar el argmax (en lugar del último índice con señal) evita el sesgo
+		por el efecto ``drain-out''.\\[4pt]
 		\begin{columns}[T]
 			\begin{column}{0.45\textwidth}
 				\textbf{Ventajas}
@@ -644,7 +613,7 @@
 \begin{frame}{Pregunta 2: Promedio Móvil y Estado Estable}
 	\begin{emptyblock}
 		\justifying
-		\textbf{Resultado:} El estado estable comienza a partir de la observación N°19.\\[8pt]
+		\textbf{Resultado:} El estado estable comienza a partir de la observación N°12.\\[8pt]
 		\centering
 		\includegraphics[width=0.95\linewidth]{method-4.png}
 	\end{emptyblock}
@@ -661,10 +630,10 @@
 			\begin{column}{0.45\textwidth}
 				\textbf{Procedimiento:}
 				\begin{enumerate}\small
-					\item Invertir: $x'_i = x_{N-i+1}$
-					\item Calcular $\mu_0,\,\sigma$ en la \textit{primera} mitad de $x'$
-					\item Calcular $C^+_i,\,C^-_i$ sobre $x'$
-					\item Primer índice $i^*$ con señal $> h$ en $x'$
+					\item Invertir el promedio móvil: $\bar{r}'_i = \bar{r}_{N-i+1}$
+					\item Calcular $\mu_0$ y $\sigma$ sobre la serie invertida
+					\item Calcular $C^+_i,\,C^-_i$ sobre $\bar{r}'$
+					\item Primer índice $i^*$ con señal $> h$ en $\bar{r}'$
 					\item Mapear: $\hat{n}_{\text{wu}} = N - i^*$
 				\end{enumerate}
 			\end{column}
@@ -697,9 +666,19 @@
 \begin{frame}{Pregunta 2: Promedio Móvil y Estado Estable}
 	\begin{emptyblock}
 		\justifying
-		\textbf{Resultado:} El estado estable comienza a partir de la observación N°20.\\[8pt]
+		\textbf{Resultado:} El estado estable comienza a partir de la observación N°34.\\[8pt]
 		\centering
 		\includegraphics[width=0.95\linewidth]{method-5.png}
+	\end{emptyblock}
+\end{frame}
+
+\begin{frame}{Pregunta 2: Promedio Móvil y Estado Estable}
+	\begin{emptyblock}
+		\justifying
+		A continuación, se muestra la Curva de Estabilización, con los \textit{warm-up points}
+		determinados por cada uno de los 5 métodos desarrollados.\\[8pt]
+		\centering
+		\includegraphics[width=0.95\linewidth]{summary.png}
 	\end{emptyblock}
 \end{frame}
 
@@ -713,33 +692,23 @@
 				\textbf{\#} & \textbf{Método} & \textbf{Warm-up}
 				            & \textbf{Base}   & \textbf{Complejidad}                       \\
 				\midrule
-				1           & Cambio Relativo & 15                   & Heurística  & Baja  \\
-				2           & Welch (1983)    & 14                   & Gráfica     & Baja  \\
-				3           & Ancho IC 95\%   & 18                   & Estadística & Media \\
-				4           & CUSUM Directo   & 19                   & Control     & Media \\
-				5           & CUSUM Inverso   & 20                   & Control     & Media \\
+				1           & Cambio Relativo & 22                   & Heurística  & Baja  \\
+				2           & Welch (1983)    & 46                   & Gráfica     & Baja  \\
+				3           & Ancho IC 95\%   & 20                   & Estadística & Media \\
+				4           & CUSUM Directo   & 12                   & Control     & Media \\
+				5           & CUSUM Inverso   & 34                   & Control     & Media \\
 				\bottomrule
 			\end{tabular}
 		\end{center}
 		\textbf{Conclusión:}\\[4pt]
-		Los cinco métodos analizados sitúan el inicio del estado estable entre las
-		observaciones \textbf{14 y 20}. Mientras que los enfoques heurísticos y gráficos
-		detectan una estabilización temprana, los métodos de control estadístico
-		riguroso, como el ancho del intervalo de confianza y CUSUM, exigen mayor
-		evidencia. Para garantizar la eliminación total del sesgo transitorio, se
-		recomienda adoptar un criterio conservador y establecer el \textit{warm-up point}
-		en la \textbf{observación 20}.
+		Los cinco métodos sitúan el inicio del estado estable entre las
+		observaciones \textbf{12 y 46}, reflejando la diferencia en sus
+		mecanismos de detección. El CUSUM Directo, al evaluar
+		desviaciones acumuladas, detecta el punto de quiebre más temprano,
+		mientras que el Método de Welch, por su suavizado conservador, produce la
+		estimación más tardía. Para equilibrar la eliminación del sesgo transitorio
+		con la conservación de datos, se recomienda adoptar un enfoque intermedio.
 	\end{alertblock}
-\end{frame}
-
-\begin{frame}{Pregunta 2: Promedio Móvil y Estado Estable}
-	\begin{emptyblock}
-		\justifying
-		A continuación, se muestra la Curva de Estabilización, con los \textit{warm-up points}
-		determinados por cada uno de los 5 métodos desarrollados.\\[8pt]
-		\centering
-		\includegraphics[width=0.95\linewidth]{summary.png}
-	\end{emptyblock}
 \end{frame}
 
 % ════════════════════════════════════════════════════════════
